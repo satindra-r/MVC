@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/gorilla/mux"
 	"mvc/pkg/config"
+	"mvc/pkg/controllers/admin"
 	"mvc/pkg/controllers/chef"
 	"mvc/pkg/controllers/user"
 	"mvc/pkg/utils"
@@ -16,6 +17,7 @@ func SetupRouter() *mux.Router {
 	utils.SetRoute(router, "POST", "/api/User/login", user.VerifyLogin, user.DBGetUserCredentials, user.AuthCheckUserCredentials)
 	utils.SetRoute(router, "POST", "/api/Order", user.VerifyCreateOrder, user.AuthVerifyUser, user.DBCreateOrder)
 	utils.SetRoute(router, "PUT", "/api/Dish", chef.VerifyPreparedDish, user.AuthVerifyUser, chef.DBGetUserRole, chef.AuthVerifyChef, chef.DBSetPreparedDish)
+	utils.SetRoute(router, "PUT", "/api/Order", admin.VerifyPaidOrder, user.AuthVerifyUser, chef.DBGetUserRole, admin.AuthVerifyAdmin, admin.DBSetPaidOrder)
 
 	return router
 }
