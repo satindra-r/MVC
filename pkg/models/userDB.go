@@ -1,5 +1,10 @@
 package models
 
+import (
+	"database/sql"
+	"mvc/pkg/utils"
+)
+
 type User struct {
 	UserId   int    `json:"UserId"`
 	UserName string `json:"UserName"`
@@ -9,12 +14,29 @@ type User struct {
 	Hash     string `json:"Hash"`
 }
 
+type Order struct {
+	OrderId int `json:"OrderId"`
+	UserId  int `json:"UserId"`
+	Price   int `json:"Price"`
+	Paid    int `json:"Paid"`
+}
+
+type Dish struct {
+	DishId          int    `json:"DishId"`
+	ItemId          int    `json:"ItemId"`
+	OrderId         int    `json:"OrderId"`
+	DishCount       int    `json:"DishCount"`
+	SplInstructions string `json:"SplInstructions"`
+	Prepared        int    `json:"Prepared"`
+}
+
 func GetNextUserID() int {
 	row := DB.QueryRow(`select max(UserId) from Users`)
 
 	var userId int
+	var err error
 
-	err := row.Scan(&userId)
+	err = row.Scan(&userId)
 
 	if err != nil {
 		return 1
@@ -34,110 +56,65 @@ func GetUserCredentials(userName string) (string, int) {
 	var userId int
 	var err error
 	var row = DB.QueryRow(`select Hash,UserId from Users where UserName = ?`, userName)
-	err = row.Scan(&hash)
-	if err != nil {
-		return "", -1
-	}
-	err = row.Scan(&userId)
+	err = row.Scan(&hash, &userId)
 	if err != nil {
 		return "", -1
 	}
 	return hash, userId
 }
 
-/*
-func GetAllUsers() ([]User, error) {
-	query := `SELECT * FROM Users`
-	rows, err := DB.Query(query)
-	if err != nil {
-		return nil, fmt.Errorf("error querying users: %v", err)
-	}
-	defer rows.Close()
+func GetNextDishID() int {
+	row := DB.QueryRow(`select max(DishId) from Dishes`)
 
-	var users []User
+	var dishId int
+	var err error
+	err = row.Scan(&dishId)
+	if err != nil {
+		return 1
+	}
+	return dishId + 1
+}
+
+func GetNextOrderID() int {
+	row := DB.QueryRow(`select max(OrderId) from Orders`)
+
+	var orderId int
+	var err error
+	err = row.Scan(&orderId)
+	if err != nil {
+		return 1
+	}
+	return orderId + 1
+}
+
+func GetItemPrices() ([]int, error) {
+	var rows *sql.Rows
+	var err error
+
+	rows, err = DB.Query(`select Items.Price from Items`)
+	if utils.LogIfErr(err, "DB error") {
+		return nil, err
+	}
+	var prices []int
+
 	for rows.Next() {
-		var user User
-		err := rows.Scan(&user.ID, &user.Name, &user.Address, &user.Country)
-		if err != nil {
-			return nil, fmt.Errorf("error scanning user: %v", err)
+		var price int
+		err = rows.Scan(&price)
+		if utils.LogIfErr(err, "DB error") {
+			return nil, err
 		}
-		users = append(users, user)
+		prices = append(prices, price)
 	}
 
-	return users, nil
+	return prices, nil
 }
 
-// GetUserByID retrieves a user by ID
-func GetUserByID(id int) (*User, error) {
-	query := "SELECT id, name, address, country FROM Users WHERE id = ?"
-	row := DB.QueryRow(query, id)
-
-	var user User
-	err := row.Scan(&user.ID, &user.Name, &user.Address, &user.Country)
-	if err != nil {
-		if err == sql.ErrNoRows {
-			return nil, fmt.Errorf("user not found")
-		}
-		return nil, fmt.Errorf("error scanning user: %v", err)
-	}
-
-	return &user, nil
+func CreateDish(dish Dish) error {
+	_, err := DB.Exec(`insert into Dishes(DishId, ItemId, OrderId, DishCount, SplInstructions, Prepared) value (?, ?, ?, ?, ?, 0)`, dish.DishId, dish.ItemId, dish.OrderId, dish.DishCount, dish.SplInstructions)
+	return err
 }
 
-// CreateUser creates a new user
-func CreateUser(user User) (int, error) {
-	query := "INSERT INTO Users (name, address, country) VALUES (?, ?, ?)"
-	result, err := DB.Exec(query, user.Name, user.Address, user.Country)
-	if err != nil {
-		return 0, fmt.Errorf("error creating user: %v", err)
-	}
-
-	id, err := result.LastInsertId()
-	if err != nil {
-		return 0, fmt.Errorf("error getting last insert id: %v", err)
-	}
-
-	return int(id), nil
+func CreateOrder(order Order) error {
+	_, err := DB.Exec(`insert into Orders(OrderId, UserId, Price, Paid) value (?, ?, ?, 0)`, order.OrderId, order.UserId, order.Price)
+	return err
 }
-
-// UpdateUser updates an existing user
-func UpdateUser(id int, user User) error {
-	query := `UPDATE Users SET name = ?, address = ?, country = ? WHERE id = ?`
-	result, err := DB.Exec(query, user.Name, user.Address, user.Country, id)
-	if err != nil {
-		return fmt.Errorf("error updating user: %v", err)
-	}
-
-	rowsAffected, err := result.RowsAffected()
-	if err != nil {
-		return fmt.Errorf("error getting rows affected: %v", err)
-	}
-
-	if rowsAffected == 0 {
-		return fmt.Errorf("user not found")
-	}
-
-	return nil
-}
-
-
-// DeleteUser deletes a user by ID
-func DeleteUser(id int) error {
-	query := "DELETE FROM Users WHERE id = ?"
-	result, err := DB.Exec(query, id)
-	if err != nil {
-		return fmt.Errorf("error deleting user: %v", err)
-	}
-
-	rowsAffected, err := result.RowsAffected()
-	if err != nil {
-		return fmt.Errorf("error getting rows affected: %v", err)
-	}
-
-	if rowsAffected == 0 {
-		return fmt.Errorf("user not found")
-	}
-
-	return nil
-}
-*/

@@ -58,10 +58,12 @@ func GetOrReflect(w http.ResponseWriter, r *http.Request, item string) (string, 
 	val = r.Header.Get(item)
 	var e error
 	if len(val) == 0 {
-		_, e = fmt.Fprint(w, "No "+item+" Provided")
+		w.WriteHeader(http.StatusBadRequest)
+		_, _ = fmt.Fprint(w, "No "+item+" Provided")
 		_ = LogIfErr(e, "Connection Error")
+		return "", true
 	}
-	return val, (e != nil)
+	return val, false
 }
 
 func SetMiddlewares(middlewares []Middleware) func(w http.ResponseWriter, r *http.Request) {

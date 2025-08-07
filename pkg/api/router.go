@@ -2,31 +2,25 @@ package api
 
 import (
 	"fmt"
+	"github.com/gorilla/mux"
 	"mvc/pkg/config"
+	"mvc/pkg/controllers/chef"
 	"mvc/pkg/controllers/user"
 	"mvc/pkg/utils"
-	"net/http"
-
-	"github.com/gorilla/mux"
 )
 
 func SetupRouter() *mux.Router {
 	router := mux.NewRouter()
 
-	router.HandleFunc("/", homeHandler).Methods("GET")
-
-	utils.SetRoute(router, "POST", "/api/User", user.VerifCreateUser, user.DBCreateUser)
-	utils.SetRoute(router, "POST", "/api/User/login", user.VerifLogin, user.DBGetUserCredentials, user.AuthCheckUserCredentials)
+	utils.SetRoute(router, "POST", "/api/User", user.VerifyCreateUser, user.DBCreateUser)
+	utils.SetRoute(router, "POST", "/api/User/login", user.VerifyLogin, user.DBGetUserCredentials, user.AuthCheckUserCredentials)
+	utils.SetRoute(router, "POST", "/api/Order", user.VerifyCreateOrder, user.AuthVerifyUser, user.DBCreateOrder)
+	utils.SetRoute(router, "PUT", "/api/Dish", chef.VerifyPreparedDish, user.AuthVerifyUser, chef.DBGetUserRole, chef.AuthVerifyChef, chef.DBSetPreparedDish)
 
 	return router
 }
 
-func homeHandler(w http.ResponseWriter, r *http.Request) {
-	_, _ = fmt.Fprintf(w, "Hello World")
-}
-
 // TODO do this
-
 func PrintRoutes() {
 	fmt.Println("Server listening on http://localhost:" + config.ServerPort)
 	/*fmt.Println("Available endpoints:")

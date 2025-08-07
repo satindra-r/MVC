@@ -2,6 +2,7 @@ package user
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"golang.org/x/crypto/bcrypt"
 	"mvc/pkg/models"
@@ -12,7 +13,17 @@ import (
 
 var phoneRegex = regexp.MustCompile(`^(?:\+[0-9]{1,2})?[0-9]{10}$`)
 
-func VerifCreateUser(w http.ResponseWriter, r *http.Request) *http.Request {
+type Dishes struct {
+	ItemId          int    `json:"itemId"`
+	SplInstructions string `json:"splInstructions"`
+	Count           int    `json:"count"`
+}
+
+type Order struct {
+	Items []Dishes `json:"Items"`
+}
+
+func VerifyCreateUser(w http.ResponseWriter, r *http.Request) *http.Request {
 	var hasErr = false
 	var err error
 	var user = models.User{}
@@ -44,7 +55,10 @@ func VerifCreateUser(w http.ResponseWriter, r *http.Request) *http.Request {
 		return nil
 	}
 
-	user.Address = r.FormValue("Address")
+	user.Address, hasErr = utils.GetOrReflect(w, r, "Address")
+	if hasErr {
+		return nil
+	}
 
 	password, hasErr := utils.GetOrReflect(w, r, "Password")
 	if hasErr {
@@ -67,7 +81,7 @@ func VerifCreateUser(w http.ResponseWriter, r *http.Request) *http.Request {
 	return r
 }
 
-func VerifLogin(w http.ResponseWriter, r *http.Request) *http.Request {
+func VerifyLogin(w http.ResponseWriter, r *http.Request) *http.Request {
 	var hasErr bool
 	var UserName string
 	var Password string
@@ -83,5 +97,52 @@ func VerifLogin(w http.ResponseWriter, r *http.Request) *http.Request {
 
 	r = r.WithContext(context.WithValue(r.Context(), "UserName", UserName))
 	r = r.WithContext(context.WithValue(r.Context(), "Password", Password))
+	return r
+}
+
+func VerifyCreateOrder(w http.ResponseWriter, r *http.Request) *http.Request {
+	var err error
+	var order Order
+	err = json.NewDecoder(r.Body).Decode(&order)
+
+	if err != nil {
+		utils.RespondFailure(w, http.StatusBadRequest, "Invalid Order")
+		return nil
+	}
+	if order.Items == nil {
+		utils.RespondFailure(w, http.StatusBadRequest, "Empty Order")
+		return nil
+	}
+	var DBDishes []models.Dish
+	var DBOrder = models.Order{}
+	DBOrder.OrderId = models.GetNextOrderID()
+	DBOrder.Price = 0
+
+	var DishId = models.GetNextDishID()
+	var prices []int
+	prices, err = models.GetItemPrices()
+
+	if utils.ReflectAndLogErr(w, http.StatusInternalServerError, err, "Database Error") {
+		return nil
+	}
+
+	for _, item := range order.Items {
+
+		if item.Count > 0 {
+			var dish = models.Dish{}
+			dish.DishId = DishId
+			dish.OrderId = DBOrder.OrderId
+			dish.ItemId = item.ItemId
+			dish.DishCount = item.Count
+			dish.SplInstructions = item.SplInstructions
+			DBDishes = append(DBDishes, dish)
+			DBOrder.Price += prices[item.ItemId] * item.Count
+			DishId++
+		}
+	}
+
+	r = r.WithContext(context.WithValue(r.Context(), "DBDishes", DBDishes))
+	r = r.WithContext(context.WithValue(r.Context(), "DBOrder", DBOrder))
+
 	return r
 }
