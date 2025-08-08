@@ -1,0 +1,2 @@
+USE `ChefDB`;
+DROP TABLE IF EXISTS `Users`;
