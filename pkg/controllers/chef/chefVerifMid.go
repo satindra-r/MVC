@@ -24,6 +24,7 @@ func VerifyPreparedDish(w http.ResponseWriter, r *http.Request) *http.Request {
 
 	if err != nil {
 		utils.RespondFailure(w, http.StatusBadRequest, "Invalid dishId")
+		return nil
 	}
 
 	preparedStr, hasErr = utils.GetOrReflect(w, r, "prepared")
@@ -35,6 +36,7 @@ func VerifyPreparedDish(w http.ResponseWriter, r *http.Request) *http.Request {
 
 	if err != nil {
 		utils.RespondFailure(w, http.StatusBadRequest, "Invalid prepared")
+		return nil
 	}
 
 	prepared = max(0, min(prepared, 1))

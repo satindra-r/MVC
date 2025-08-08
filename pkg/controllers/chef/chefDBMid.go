@@ -23,5 +23,6 @@ func DBSetPreparedDish(w http.ResponseWriter, r *http.Request) *http.Request {
 	if utils.ReflectAndLogErr(w, http.StatusInternalServerError, err, "Database Error") {
 		return nil
 	}
+	utils.RespondSuccess(w, http.StatusOK, "Dish Prepared Set")
 	return r
 }

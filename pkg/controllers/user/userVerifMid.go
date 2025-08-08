@@ -47,6 +47,7 @@ func VerifyCreateUser(w http.ResponseWriter, r *http.Request) *http.Request {
 
 	user.PhoneNo, hasErr = utils.GetOrReflect(w, r, "PhoneNo")
 	if hasErr {
+
 		return nil
 	}
 

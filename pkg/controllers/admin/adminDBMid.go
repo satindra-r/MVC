@@ -13,5 +13,40 @@ func DBSetPaidOrder(w http.ResponseWriter, r *http.Request) *http.Request {
 	if utils.ReflectAndLogErr(w, http.StatusInternalServerError, err, "Database Error") {
 		return nil
 	}
+	utils.RespondSuccess(w, http.StatusOK, "Order Paid Set")
+	return r
+}
+
+func DBSwapSections(w http.ResponseWriter, r *http.Request) *http.Request {
+	var sectionId1 = r.Context().Value("SectionId1").(int)
+	var sectionId2 = r.Context().Value("SectionId2").(int)
+	var err error
+	err = models.SwapSections(sectionId1, sectionId2)
+	if utils.ReflectAndLogErr(w, http.StatusInternalServerError, err, "Database error") {
+		return nil
+	}
+	utils.RespondSuccess(w, http.StatusOK, "Sections Swapped")
+	return r
+}
+
+func DBSetUserRole(w http.ResponseWriter, r *http.Request) *http.Request {
+	var userId = r.Context().Value("TargetUserId").(int)
+	var role = r.Context().Value("TargetRole").(string)
+	var err error
+	err = models.SetUserRole(userId, role)
+	if utils.ReflectAndLogErr(w, http.StatusInternalServerError, err, "Database error") {
+		return nil
+	}
+	utils.RespondSuccess(w, http.StatusOK, "User Role Set")
+	return r
+}
+
+func DBCreateItem(w http.ResponseWriter, r *http.Request) *http.Request {
+	var item = r.Context().Value("Item").(models.Item)
+	var err = models.CreateItem(item)
+	if utils.ReflectAndLogErr(w, http.StatusInternalServerError, err, "Database Error") {
+		return nil
+	}
+	utils.RespondSuccess(w, http.StatusOK, "Item Created")
 	return r
 }

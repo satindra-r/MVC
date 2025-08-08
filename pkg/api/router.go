@@ -18,6 +18,10 @@ func SetupRouter() *mux.Router {
 	utils.SetRoute(router, "POST", "/api/Order", user.VerifyCreateOrder, user.AuthVerifyUser, user.DBCreateOrder)
 	utils.SetRoute(router, "PUT", "/api/Dish", chef.VerifyPreparedDish, user.AuthVerifyUser, chef.DBGetUserRole, chef.AuthVerifyChef, chef.DBSetPreparedDish)
 	utils.SetRoute(router, "PUT", "/api/Order", admin.VerifyPaidOrder, user.AuthVerifyUser, chef.DBGetUserRole, admin.AuthVerifyAdmin, admin.DBSetPaidOrder)
+	utils.SetRoute(router, "PUT", "/api/Section", admin.VerifySwapSections, user.AuthVerifyUser, chef.DBGetUserRole, admin.AuthVerifyAdmin, admin.DBSwapSections)
+	utils.SetRoute(router, "PUT", "/api/User", admin.VerifySetUserRole, user.AuthVerifyUser, chef.DBGetUserRole, admin.AuthVerifyAdmin, admin.AuthDisallowDemote, admin.DBSetUserRole)
+	utils.SetRoute(router, "POST", "/api/Item", admin.VerifyCreateItem, user.AuthVerifyUser, chef.DBGetUserRole, admin.AuthVerifyAdmin, admin.DBCreateItem)
+	//utils.SetRoute(router, "PUT", "/api/Item", admin.VerifyEditItem, user.AuthVerifyUser, chef.DBGetUserRole, admin.AuthVerifyAdmin, admin.DBEditItem)
 
 	return router
 }

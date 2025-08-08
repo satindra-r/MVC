@@ -2,6 +2,7 @@ package admin
 
 import (
 	"context"
+	"mvc/pkg/models"
 	"mvc/pkg/utils"
 	"net/http"
 	"strconv"
@@ -17,6 +18,7 @@ func VerifyPaidOrder(w http.ResponseWriter, r *http.Request) *http.Request {
 
 	orderIdStr, hasErr = utils.GetOrReflect(w, r, "orderId")
 	if hasErr {
+		utils.RespondFailure(w, http.StatusBadRequest, "Invalid orderId")
 		return nil
 	}
 
@@ -24,6 +26,7 @@ func VerifyPaidOrder(w http.ResponseWriter, r *http.Request) *http.Request {
 
 	if err != nil {
 		utils.RespondFailure(w, http.StatusBadRequest, "Invalid orderId")
+		return nil
 	}
 
 	paidStr, hasErr = utils.GetOrReflect(w, r, "paid")
@@ -41,6 +44,120 @@ func VerifyPaidOrder(w http.ResponseWriter, r *http.Request) *http.Request {
 
 	r = r.WithContext(context.WithValue(r.Context(), "OrderId", orderId))
 	r = r.WithContext(context.WithValue(r.Context(), "Paid", paid))
+
+	return r
+}
+
+func VerifySwapSections(w http.ResponseWriter, r *http.Request) *http.Request {
+	var sectionId1Str string
+	var sectionId2Str string
+	var sectionId1 int
+	var sectionId2 int
+	var hasErr bool
+	var err error
+
+	sectionId1Str, hasErr = utils.GetOrReflect(w, r, "sectionId1")
+	if hasErr {
+		return nil
+	}
+
+	sectionId1, err = strconv.Atoi(sectionId1Str)
+
+	if err != nil {
+		utils.RespondFailure(w, http.StatusBadRequest, "Invalid sectionId1")
+		return nil
+	}
+
+	sectionId2Str, hasErr = utils.GetOrReflect(w, r, "sectionId2")
+	if hasErr {
+		return nil
+	}
+
+	sectionId2, err = strconv.Atoi(sectionId2Str)
+
+	if err != nil {
+		utils.RespondFailure(w, http.StatusBadRequest, "Invalid sectionId2")
+		return nil
+	}
+
+	r = r.WithContext(context.WithValue(r.Context(), "SectionId1", sectionId1))
+	r = r.WithContext(context.WithValue(r.Context(), "SectionId2", sectionId2))
+
+	return r
+}
+
+func VerifySetUserRole(w http.ResponseWriter, r *http.Request) *http.Request {
+	var userIdStr string
+	var role string
+	var userId int
+	var hasErr bool
+	var err error
+
+	userIdStr, hasErr = utils.GetOrReflect(w, r, "userId")
+	if hasErr {
+		return nil
+	}
+
+	userId, err = strconv.Atoi(userIdStr)
+
+	if err != nil {
+		utils.RespondFailure(w, http.StatusBadRequest, "Invalid userId")
+		return nil
+	}
+
+	role, hasErr = utils.GetOrReflect(w, r, "role")
+	if hasErr {
+		return nil
+	}
+
+	if role != "User" && role != "Chef" && role != "Admin" {
+		utils.RespondFailure(w, http.StatusBadRequest, "Invalid role")
+		return nil
+	}
+
+	r = r.WithContext(context.WithValue(r.Context(), "TargetUserId", userId))
+	r = r.WithContext(context.WithValue(r.Context(), "TargetRole", role))
+
+	return r
+}
+
+func VerifyCreateItem(w http.ResponseWriter, r *http.Request) *http.Request {
+	var item models.Item
+	var sectionIdStr string
+	var priceStr string
+
+	var hasErr bool
+	var err error
+
+	item.ItemId = models.GetNextItemID()
+
+	item.ItemName, hasErr = utils.GetOrReflect(w, r, "itemName")
+	if hasErr {
+		return nil
+	}
+
+	sectionIdStr, hasErr = utils.GetOrReflect(w, r, "sectionId")
+	if hasErr {
+		return nil
+	}
+
+	item.SectionId, err = strconv.Atoi(sectionIdStr)
+
+	if err != nil {
+		utils.RespondFailure(w, http.StatusBadRequest, "Invalid sectionId")
+		return nil
+	}
+
+	priceStr, hasErr = utils.GetOrReflect(w, r, "price")
+	if hasErr {
+		return nil
+	}
+	item.Price, err = strconv.ParseFloat(priceStr, 32)
+	if item.Price <= 0 || err != nil {
+		utils.RespondFailure(w, http.StatusBadRequest, "Invalid price")
+		return nil
+	}
+	r = r.WithContext(context.WithValue(r.Context(), "Item", item))
 
 	return r
 }

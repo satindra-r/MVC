@@ -1,7 +1,6 @@
 package admin
 
 import (
-	"fmt"
 	"mvc/pkg/utils"
 	"net/http"
 )
@@ -9,7 +8,14 @@ import (
 func AuthVerifyAdmin(w http.ResponseWriter, r *http.Request) *http.Request {
 	if r.Context().Value("Role") != "Admin" {
 		utils.RespondFailure(w, http.StatusForbidden, "Forbidden")
-		fmt.Println(r.Context().Value("Role"))
+		return nil
+	}
+	return r
+}
+
+func AuthDisallowDemote(w http.ResponseWriter, r *http.Request) *http.Request {
+	if r.Context().Value("TargetUserId").(int) == r.Context().Value("UserId").(int) {
+		utils.RespondFailure(w, http.StatusForbidden, "Cannot Demote Yourself")
 		return nil
 	}
 	return r
