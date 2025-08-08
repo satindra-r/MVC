@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en" class="h-screen">
+<head>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Mono:wght@100..900&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <script src="/static/js/adminItems.js" defer></script>
+    <title>
+        Items
+    </title>
+</head>
+<body class="bg-slate-900 h-screen font-mono">
+<input type="hidden" id="filters" data-filters="{{.Filters}}">
+<div class="flex flex-col items-center justify-around h-screen text-white">
+    <div class="flex flex-row bg-slate-800 w-full h-[10%] text-teal-500 items-center justify-end gap-16 px-32">
+        <a href="/items">Items</a>
+        <a href="/sections">Sections</a>
+        <a href="/orders">Orders</a>
+        <a href="/users">Users</a>
+        <a id="logout" href="/login">Log Out</a>
+    </div>
+
+    <div class="flex flex-row items-center w-full h-[10%] px-8">
+        <div class="flex flex-row w-full">
+            <label for="page">Page:</label>
+            <input id="page" type="number" value="{{.Page}}" min="1" class="w-[5%] bg-slate-800 ps-2">
+        </div>
+    </div>
+
+    <div class="flex flex-row w-full h-[70%]">
+        <div class="flex flex-col border w-[15%] h-full px-8 py-4">
+            <div class="flex flex-row items-center w-full h-[5vh] font-bold">
+                Filters
+            </div>
+            {{range $i,$section := .Sections}}
+                <div class="flex flex-row items-center justify-start gap-4 h-[5vh]">
+                    <input id="checkbox {{ $i }}" type="checkbox" data-SectionId="{{$section.SectionId}}">
+                    <div class="w-[2vh] h-[2vh] rounded-full"
+                         style="background-color: hsl({{$section.Colour}},50%,75%)"></div>
+                    <label for="checkbox {{ $i }}">{{$section.SectionName}}</label>
+                </div>
+            {{end}}
+        </div>
+        <div class="flex flex-col w-[85%] h-full">
+
+            <div class="flex flex-row justify-between w-full h-[10%] border-gray-600 border items-center px-8">
+                <input id="itemName -1" class="w-[10%] bg-slate-800" placeholder="Item Name">
+
+                <div class="flex flex-row items-center justify-start gap-2 w-[10%] h-full">
+                    <select id="sectionId -1" class="w-full bg-slate-800">
+                        {{range $j,$section := .Sections}}
+                            <option value="{{$section.SectionId}}">{{$section.SectionName}}</option>
+                        {{end}}
+                    </select>
+                </div>
+
+                <div class="flex flex-row justify-around text-right w-[5%]">
+                    ₹<input id="price -1" class="text-right w-full bg-slate-800" placeholder="Price">
+
+                </div>
+                <div class="w-[5%] text-center">
+                    <button id="edit -1" class="w-full border-gray-500 border-2  rounded-full">
+                        Add Item
+                    </button>
+                </div>
+            </div>
+
+            {{range $i, $item := .Items}}
+                <div class="flex flex-row justify-between w-full h-[10%] border-gray-600 border items-center px-8">
+                    <input id="itemName {{ $i }}" class="w-[10%] bg-slate-800"
+                           placeholder="{{$item.ItemName}}">
+
+                    <div class="flex flex-row items-center justify-start gap-2 w-[10%] h-full">
+                        <select id="sectionId {{ $i }}" class="w-full bg-slate-800">
+                            {{range $j, $section := $.Sections}}
+                                {{if eq $section.SectionId $item.SectionId}}
+                                    <option value="{{$section.SectionId}}"
+                                            selected="selected">{{$section.SectionName}}
+                                    </option>
+                                {{else}}
+                                    <option value="{{$section.SectionId}}">{{$section.SectionName}}</option>
+                                {{end}}
+                            {{end}}
+                        </select>
+                    </div>
+
+                    <div class="flex flex-row justify-around text-right w-[5%]">
+                        ₹<input id="price {{ $i }}" class="text-right w-full bg-slate-800"
+                                placeholder="{{$item.Price}}">
+
+                    </div>
+                    <div class="w-[5%] text-center">
+                        <button id="edit {{ $i }}" data-Itemid="{{$item.ItemId}}"
+                                class="w-full border-gray-500 border-2 rounded-full">
+                            Save Item
+                        </button>
+                    </div>
+                </div>
+            {{end}}
+        </div>
+    </div>
+    <div class="flex flex-row w-full h-[10%] items-center justify-end px-8 bg-slate-800">
+        <div id="Error" class="flex items-center justify-center bg-red-400 rounded-l w-[30%] h-[70%] hidden">
+
+        </div>
+    </div>
+</div>
+</body>
+</html>

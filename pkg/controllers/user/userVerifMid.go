@@ -120,7 +120,7 @@ func VerifyCreateOrder(w http.ResponseWriter, r *http.Request) *http.Request {
 	DBOrder.Price = 0
 
 	var DishId = models.GetNextDishID()
-	var prices []int
+	var prices []float64
 	prices, err = models.GetItemPrices()
 
 	if utils.ReflectAndLogErr(w, http.StatusInternalServerError, err, "Database Error") {
@@ -137,7 +137,7 @@ func VerifyCreateOrder(w http.ResponseWriter, r *http.Request) *http.Request {
 			dish.DishCount = item.Count
 			dish.SplInstructions = item.SplInstructions
 			DBDishes = append(DBDishes, dish)
-			DBOrder.Price += prices[item.ItemId] * item.Count
+			DBOrder.Price += prices[item.ItemId] * (float64)(item.Count)
 			DishId++
 		}
 	}

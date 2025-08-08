@@ -4,10 +4,16 @@ import (
 	"context"
 	"mvc/pkg/utils"
 	"net/http"
+	"strings"
 )
 
 func AuthCheckUserCredentials(w http.ResponseWriter, r *http.Request) *http.Request {
 	var hash = r.Context().Value("Hash").(string)
+	var userId = r.Context().Value("UserId").(int)
+	if userId == -1 {
+		utils.RespondFailure(w, http.StatusUnauthorized, "Invalid Username or Password")
+		return nil
+	}
 
 	var isCorrectPassword = CheckUserPassword(hash, r.Context().Value("Password").(string))
 	if !isCorrectPassword {
@@ -21,14 +27,23 @@ func AuthCheckUserCredentials(w http.ResponseWriter, r *http.Request) *http.Requ
 }
 
 func AuthVerifyUser(w http.ResponseWriter, r *http.Request) *http.Request {
-	var JWT, hasErr = utils.GetOrReflect(w, r, "JWT")
-	if hasErr {
-		return nil
+
+	var cookies = r.Cookies()
+
+	var JWT = ""
+	for _, cookie := range cookies {
+		var found bool
+		JWT, found = strings.CutPrefix(cookie.Value, "JWT=")
+		if found {
+			break
+		}
+
 	}
 
 	var UserId = JWTGetUserId(JWT)
 	if UserId == -1 {
-		utils.RespondFailure(w, http.StatusUnauthorized, "Invalid or Expired JWT")
+		//utils.RespondFailure(w, http.StatusUnauthorized, "Invalid or Expired JWT")
+		http.Redirect(w, r, "/login", http.StatusFound)
 		return nil
 	}
 

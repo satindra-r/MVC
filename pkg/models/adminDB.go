@@ -2,6 +2,7 @@ package models
 
 import (
 	"database/sql"
+	"mvc/pkg/utils"
 )
 
 type Item struct {
@@ -87,4 +88,46 @@ func GetNextItemID() int {
 func CreateItem(item Item) error {
 	_, err := DB.Exec(`insert into Items (ItemId, ItemName, SectionId, Price) values (?, ?, ?, ?)`, item.ItemId, item.ItemName, item.SectionId, item.Price)
 	return err
+}
+
+func EditItem(item Item) error {
+
+	if len(item.ItemName) > 0 {
+		_, err := DB.Exec(`update Items set ItemName = ? where ItemId = ?`, item.ItemName, item.ItemId)
+		if err != nil {
+			return err
+		}
+	}
+	if item.SectionId > 0 {
+		_, err := DB.Exec(`update Items set SectionId = ? where ItemId = ?`, item.SectionId, item.ItemId)
+		if err != nil {
+			return err
+		}
+	}
+	if item.Price >= 0 {
+		_, err := DB.Exec(`update Items set Price = ? where ItemId = ?`, item.Price, item.ItemId)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func GetUsers(page int) []User {
+	rows, err := DB.Query(`
+		select UserId, UserName, Role from Users limit 10 offset ?`, (page-1)*10)
+	if utils.LogIfErr(err, "DB error") {
+		return nil
+	}
+	var users []User
+
+	for rows.Next() {
+		var user User
+		err = rows.Scan(&user.UserId, &user.UserName, &user.Role)
+		if utils.LogIfErr(err, "DB error") {
+			return nil
+		}
+		users = append(users, user)
+	}
+	return users
 }

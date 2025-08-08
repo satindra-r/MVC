@@ -50,3 +50,13 @@ func DBCreateItem(w http.ResponseWriter, r *http.Request) *http.Request {
 	utils.RespondSuccess(w, http.StatusOK, "Item Created")
 	return r
 }
+
+func DBEditItem(w http.ResponseWriter, r *http.Request) *http.Request {
+	var item = r.Context().Value("Item").(models.Item)
+	var err = models.EditItem(item)
+	if utils.ReflectAndLogErr(w, http.StatusInternalServerError, err, "Database Error") {
+		return nil
+	}
+	utils.RespondSuccess(w, http.StatusOK, "Item Edited")
+	return r
+}

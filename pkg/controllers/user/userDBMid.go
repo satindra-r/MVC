@@ -37,6 +37,7 @@ func DBCreateUser(w http.ResponseWriter, r *http.Request) *http.Request {
 
 func DBGetUserCredentials(w http.ResponseWriter, r *http.Request) *http.Request {
 	var hash, userId = models.GetUserCredentials(r.Context().Value("UserName").(string))
+
 	r = r.WithContext(context.WithValue(r.Context(), "Hash", hash))
 	r = r.WithContext(context.WithValue(r.Context(), "UserId", userId))
 

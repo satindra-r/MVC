@@ -152,11 +152,46 @@ func VerifyCreateItem(w http.ResponseWriter, r *http.Request) *http.Request {
 	if hasErr {
 		return nil
 	}
-	item.Price, err = strconv.ParseFloat(priceStr, 32)
-	if item.Price <= 0 || err != nil {
+	item.Price, err = strconv.ParseFloat(priceStr, 64)
+	if item.Price < 0 || err != nil {
 		utils.RespondFailure(w, http.StatusBadRequest, "Invalid price")
 		return nil
 	}
+	r = r.WithContext(context.WithValue(r.Context(), "Item", item))
+
+	return r
+}
+
+func VerifyEditItem(w http.ResponseWriter, r *http.Request) *http.Request {
+	var item models.Item
+	var itemIdStr string
+	var err error
+	var hasErr bool
+
+	itemIdStr, hasErr = utils.GetOrReflect(w, r, "itemId")
+	if hasErr {
+		return nil
+	}
+
+	item.ItemId, err = strconv.Atoi(itemIdStr)
+
+	if err != nil {
+		utils.RespondFailure(w, http.StatusBadRequest, "Invalid itemId")
+		return nil
+	}
+
+	item.ItemName = r.Header.Get("itemName")
+
+	item.SectionId, err = strconv.Atoi(r.Header.Get("sectionId"))
+	if err != nil {
+		item.SectionId = -1
+	}
+
+	item.Price, err = strconv.ParseFloat(r.Header.Get("price"), 64)
+	if err != nil {
+		item.Price = -1
+	}
+
 	r = r.WithContext(context.WithValue(r.Context(), "Item", item))
 
 	return r

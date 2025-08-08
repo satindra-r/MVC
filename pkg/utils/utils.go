@@ -49,8 +49,9 @@ func ReflectAndLogErr(w http.ResponseWriter, statusCode int, e error, msg string
 		w.WriteHeader(statusCode)
 		_, e = fmt.Fprint(w, msg)
 		_ = LogIfErr(e, "Connection Error")
+		return true
 	}
-	return (e != nil)
+	return false
 }
 
 func GetOrReflect(w http.ResponseWriter, r *http.Request, item string) (string, bool) {
