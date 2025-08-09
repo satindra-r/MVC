@@ -5,12 +5,12 @@ import (
 	"mvc/pkg/config"
 	"mvc/pkg/controllers/admin"
 	"mvc/pkg/controllers/chef"
-	"mvc/pkg/controllers/frontend"
 	"mvc/pkg/controllers/user"
 	adminMid "mvc/pkg/middleware/admin"
 	chefMid "mvc/pkg/middleware/chef"
 	userMid "mvc/pkg/middleware/user"
 	"mvc/pkg/utils"
+	"mvc/pkg/views"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -22,14 +22,14 @@ func SetupRouter() *mux.Router {
 	staticFs := http.FileServer(http.Dir("./pkg/views/"))
 	router.PathPrefix("/static/").Handler(staticFs)
 
-	utils.SetRoute(router, "GET", "/", userMid.AuthVerifyUser, chefMid.DBGetUserRole, frontend.RenderHomeScreen)
-	utils.SetRoute(router, "GET", "/login", frontend.RenderLogin)
-	utils.SetRoute(router, "GET", "/signUp", frontend.RenderSignUp)
-	utils.SetRoute(router, "GET", "/items", userMid.AuthVerifyUser, chefMid.DBGetUserRole, frontend.RenderItems)
-	utils.SetRoute(router, "GET", "/orders", userMid.AuthVerifyUser, chefMid.DBGetUserRole, frontend.RenderOrders)
-	utils.SetRoute(router, "GET", "/bill", userMid.AuthVerifyUser, chefMid.DBGetUserRole, frontend.RenderBill)
-	utils.SetRoute(router, "GET", "/sections", userMid.AuthVerifyUser, chefMid.DBGetUserRole, frontend.RenderSections)
-	utils.SetRoute(router, "GET", "/users", userMid.AuthVerifyUser, chefMid.DBGetUserRole, frontend.RenderUsers)
+	utils.SetRoute(router, "GET", "/", userMid.AuthVerifyUser, chefMid.DBGetUserRole, views.RenderHomeScreen)
+	utils.SetRoute(router, "GET", "/login", views.RenderLogin)
+	utils.SetRoute(router, "GET", "/signUp", views.RenderSignUp)
+	utils.SetRoute(router, "GET", "/items", userMid.AuthVerifyUser, chefMid.DBGetUserRole, views.RenderItems)
+	utils.SetRoute(router, "GET", "/orders", userMid.AuthVerifyUser, chefMid.DBGetUserRole, views.RenderOrders)
+	utils.SetRoute(router, "GET", "/bill", userMid.AuthVerifyUser, chefMid.DBGetUserRole, views.RenderBill)
+	utils.SetRoute(router, "GET", "/sections", userMid.AuthVerifyUser, chefMid.DBGetUserRole, views.RenderSections)
+	utils.SetRoute(router, "GET", "/users", userMid.AuthVerifyUser, chefMid.DBGetUserRole, views.RenderUsers)
 
 	utils.SetRoute(router, "POST", "/api/user", user.VerifyCreateUser, user.DBCreateUser)
 	utils.SetRoute(router, "POST", "/api/user/login", user.VerifyLogin, user.DBGetUserCredentials, user.AuthCheckUserCredentials)
