@@ -7,6 +7,9 @@ import (
 	"mvc/pkg/controllers/chef"
 	"mvc/pkg/controllers/frontend"
 	"mvc/pkg/controllers/user"
+	adminMid "mvc/pkg/middleware/admin"
+	chefMid "mvc/pkg/middleware/chef"
+	userMid "mvc/pkg/middleware/user"
 	"mvc/pkg/utils"
 	"net/http"
 
@@ -19,24 +22,24 @@ func SetupRouter() *mux.Router {
 	staticFs := http.FileServer(http.Dir("./pkg/views/"))
 	router.PathPrefix("/static/").Handler(staticFs)
 
-	utils.SetRoute(router, "GET", "/", user.AuthVerifyUser, chef.DBGetUserRole, frontend.RenderHomeScreen)
+	utils.SetRoute(router, "GET", "/", userMid.AuthVerifyUser, chefMid.DBGetUserRole, frontend.RenderHomeScreen)
 	utils.SetRoute(router, "GET", "/login", frontend.RenderLogin)
 	utils.SetRoute(router, "GET", "/signUp", frontend.RenderSignUp)
-	utils.SetRoute(router, "GET", "/items", user.AuthVerifyUser, chef.DBGetUserRole, frontend.RenderItems)
-	utils.SetRoute(router, "GET", "/orders", user.AuthVerifyUser, chef.DBGetUserRole, frontend.RenderOrders)
-	utils.SetRoute(router, "GET", "/bill", user.AuthVerifyUser, chef.DBGetUserRole, frontend.RenderBill)
-	utils.SetRoute(router, "GET", "/sections", user.AuthVerifyUser, chef.DBGetUserRole, frontend.RenderSections)
-	utils.SetRoute(router, "GET", "/users", user.AuthVerifyUser, chef.DBGetUserRole, frontend.RenderUsers)
+	utils.SetRoute(router, "GET", "/items", userMid.AuthVerifyUser, chefMid.DBGetUserRole, frontend.RenderItems)
+	utils.SetRoute(router, "GET", "/orders", userMid.AuthVerifyUser, chefMid.DBGetUserRole, frontend.RenderOrders)
+	utils.SetRoute(router, "GET", "/bill", userMid.AuthVerifyUser, chefMid.DBGetUserRole, frontend.RenderBill)
+	utils.SetRoute(router, "GET", "/sections", userMid.AuthVerifyUser, chefMid.DBGetUserRole, frontend.RenderSections)
+	utils.SetRoute(router, "GET", "/users", userMid.AuthVerifyUser, chefMid.DBGetUserRole, frontend.RenderUsers)
 
 	utils.SetRoute(router, "POST", "/api/user", user.VerifyCreateUser, user.DBCreateUser)
 	utils.SetRoute(router, "POST", "/api/user/login", user.VerifyLogin, user.DBGetUserCredentials, user.AuthCheckUserCredentials)
-	utils.SetRoute(router, "POST", "/api/order", user.VerifyCreateOrder, user.AuthVerifyUser, user.DBCreateOrder)
-	utils.SetRoute(router, "PUT", "/api/dish", chef.VerifyPreparedDish, user.AuthVerifyUser, chef.DBGetUserRole, chef.AuthVerifyChef, chef.DBSetPreparedDish)
-	utils.SetRoute(router, "PUT", "/api/order", admin.VerifyPaidOrder, user.AuthVerifyUser, chef.DBGetUserRole, admin.AuthVerifyAdmin, admin.DBSetPaidOrder)
-	utils.SetRoute(router, "PUT", "/api/sections", admin.VerifySwapSections, user.AuthVerifyUser, chef.DBGetUserRole, admin.AuthVerifyAdmin, admin.DBSwapSections)
-	utils.SetRoute(router, "PUT", "/api/user", admin.VerifySetUserRole, user.AuthVerifyUser, chef.DBGetUserRole, admin.AuthVerifyAdmin, admin.AuthDisallowDemote, admin.DBSetUserRole)
-	utils.SetRoute(router, "POST", "/api/item", admin.VerifyCreateItem, user.AuthVerifyUser, chef.DBGetUserRole, admin.AuthVerifyAdmin, admin.DBCreateItem)
-	utils.SetRoute(router, "PUT", "/api/item", admin.VerifyEditItem, user.AuthVerifyUser, chef.DBGetUserRole, admin.AuthVerifyAdmin, admin.DBEditItem)
+	utils.SetRoute(router, "POST", "/api/order", user.VerifyCreateOrder, userMid.AuthVerifyUser, user.DBCreateOrder)
+	utils.SetRoute(router, "PUT", "/api/dish", chef.VerifyPreparedDish, userMid.AuthVerifyUser, chefMid.DBGetUserRole, chefMid.AuthVerifyChef, chef.DBSetPreparedDish)
+	utils.SetRoute(router, "PUT", "/api/order", admin.VerifyPaidOrder, userMid.AuthVerifyUser, chefMid.DBGetUserRole, adminMid.AuthVerifyAdmin, admin.DBSetPaidOrder)
+	utils.SetRoute(router, "PUT", "/api/sections", admin.VerifySwapSections, userMid.AuthVerifyUser, chefMid.DBGetUserRole, adminMid.AuthVerifyAdmin, admin.DBSwapSections)
+	utils.SetRoute(router, "PUT", "/api/user", admin.VerifySetUserRole, userMid.AuthVerifyUser, chefMid.DBGetUserRole, adminMid.AuthVerifyAdmin, admin.AuthDisallowDemote, admin.DBSetUserRole)
+	utils.SetRoute(router, "POST", "/api/item", admin.VerifyCreateItem, userMid.AuthVerifyUser, chefMid.DBGetUserRole, adminMid.AuthVerifyAdmin, admin.DBCreateItem)
+	utils.SetRoute(router, "PUT", "/api/item", admin.VerifyEditItem, userMid.AuthVerifyUser, chefMid.DBGetUserRole, adminMid.AuthVerifyAdmin, admin.DBEditItem)
 
 	return router
 }

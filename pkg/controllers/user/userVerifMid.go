@@ -4,11 +4,12 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"golang.org/x/crypto/bcrypt"
 	"mvc/pkg/models"
 	"mvc/pkg/utils"
 	"net/http"
 	"regexp"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 var phoneRegex = regexp.MustCompile(`^(?:\+[0-9]{1,2})?[0-9]{10}$`)
