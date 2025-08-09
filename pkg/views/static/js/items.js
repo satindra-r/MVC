@@ -101,7 +101,7 @@ document.getElementById("Order").addEventListener("click", async function (e) {
             orderedItems[i] = savedItems[i];
         }
     }
-    let res = await fetch("/api/Order", {
+    let res = await fetch("/api/order", {
         method: "POST", headers: {"Content-Type": "application/json",}, body: JSON.stringify({"Items": orderedItems}),
     })
     if (res["ok"]) {

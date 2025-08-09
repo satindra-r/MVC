@@ -8,7 +8,7 @@ error=document.getElementById("Error");
 
 submit.addEventListener("click", async function () {
     if (password.value === confirmPassword.value) {
-        let res = (await fetch("/api/User", {
+        let res = (await fetch("/api/user", {
             method: "POST",
             headers: {
                 "Username": username.value,

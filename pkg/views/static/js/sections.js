@@ -20,7 +20,7 @@ downButtons[downButtons.length - 1].setAttribute("disabled", "");
 
 for (let i = 0; i < upButtons.length; i++) {
 	upButtons[i].addEventListener("click", async function (e) {
-		let res = await fetch("/api/Sections", {
+		let res = await fetch("/api/sections", {
 			method: "PUT",
 			headers: {
 				"SectionId1": e.target["dataset"]["sectionid"],
@@ -34,7 +34,7 @@ for (let i = 0; i < upButtons.length; i++) {
 }
 for (let i = 0; i < downButtons.length; i++) {
 	downButtons[i].addEventListener("click", async function (e) {
-		let res = await fetch("/api/Sections", {
+		let res = await fetch("/api/sections", {
 			method: "PUT",
 			headers: {
 				"SectionId1": e.target["dataset"]["sectionid"],

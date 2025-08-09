@@ -67,7 +67,7 @@ for (let i = 0; i < dropdowns.length; i++) {
 for (let i = 0; i < checkboxes.length; i++) {
 	for (let j = 0; j < checkboxes[i].length; j++) {
 		checkboxes[i][j].addEventListener("click", async function (e) {
-			let res = await fetch("/api/Dish", {
+			let res = await fetch("/api/dish", {
 				method: "PUT",
 				headers: {
 					DishId: e.target["dataset"]["dishid"],

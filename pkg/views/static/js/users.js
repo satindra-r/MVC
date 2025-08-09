@@ -32,7 +32,7 @@ if (userRadios.length === 0 && pageNo > 1) {
 
 for (let i = 0; i < userRadios.length; i++) {
     userRadios[i].addEventListener("click", async function (e) {
-        let res = await fetch("/api/User", {
+        let res = await fetch("/api/user", {
             method: "PUT", headers: {
                 UserId: e.target["dataset"]["userid"], Role: "User"
             }
@@ -46,7 +46,7 @@ for (let i = 0; i < userRadios.length; i++) {
 
 for (let i = 0; i < chefRadios.length; i++) {
     chefRadios[i].addEventListener("click", async function (e) {
-        let res = await fetch("/api/User", {
+        let res = await fetch("/api/user", {
             method: "PUT", headers: {
                 UserId: e.target["dataset"]["userid"], Role: "Chef"
             }
@@ -60,7 +60,7 @@ for (let i = 0; i < chefRadios.length; i++) {
 
 for (let i = 0; i < adminRadios.length; i++) {
     adminRadios[i].addEventListener("click", async function (e) {
-        let res = await fetch("/api/User", {
+        let res = await fetch("/api/user", {
             method: "PUT", headers: {
                 UserId: e.target["dataset"]["userid"], Role: "Admin"
             }

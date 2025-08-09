@@ -61,7 +61,7 @@ for (let i = 0; i < edits.length; i++) {
         if (prices[i].value) {
             headers["Price"] = prices[i].value;
         }
-        let res = await fetch("/api/Item", {
+        let res = await fetch("/api/item", {
             method: "PUT", headers: headers
         });
         if (res["ok"]) {
@@ -77,7 +77,7 @@ for (let i = 0; i < edits.length; i++) {
 
 document.getElementById("edit -1").addEventListener("click", async function (e) {
 
-    let res = await fetch("/api/Item", {
+    let res = await fetch("/api/item", {
         method: "POST", headers: {
             ItemName: document.getElementById("itemName -1").value,
             SectionId: document.getElementById("sectionId -1").value,

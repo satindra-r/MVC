@@ -4,7 +4,7 @@ let error=document.getElementById("Error");
 
 
 async function login() {
-	let res = await (await fetch("/api/User/login", {
+	let res = await (await fetch("/api/user/login", {
 		method: "POST",
 		headers: {"Username": username.value, "Password": password.value}
 	}));
