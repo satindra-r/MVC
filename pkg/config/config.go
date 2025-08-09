@@ -28,7 +28,7 @@ func LoadEnvs() {
 	EnvConfig.dbHost = os.Getenv("MYSQL_HOST")
 	EnvConfig.dbUser = os.Getenv("MYSQL_USER")
 	EnvConfig.dbPassword = os.Getenv("MYSQL_PASSWORD")
-	EnvConfig.database = os.Getenv("MYSQL_DATABASE")
+	EnvConfig.database = "ChefDB"
 	EnvConfig.dbPort = os.Getenv("MYSQL_PORT")
 }
 
