@@ -2,7 +2,6 @@ package api
 
 import (
 	"fmt"
-	"github.com/gorilla/mux"
 	"mvc/pkg/config"
 	"mvc/pkg/controllers/admin"
 	"mvc/pkg/controllers/chef"
@@ -10,6 +9,8 @@ import (
 	"mvc/pkg/controllers/user"
 	"mvc/pkg/utils"
 	"net/http"
+
+	"github.com/gorilla/mux"
 )
 
 func SetupRouter() *mux.Router {
@@ -41,15 +42,15 @@ func SetupRouter() *mux.Router {
 }
 
 func PrintRoutes() {
-	fmt.Println("Server listening on http://localhost:" + config.ServerPort)
+	fmt.Println("Server listening on http://localhost:" + config.EnvConfig.ServerPort)
 	fmt.Println("Available endpoints:")
-	fmt.Println("  POST  /api/User")
-	fmt.Println("  POST  /api/User/login")
-	fmt.Println("  POST  /api/Order")
-	fmt.Println("  PUT /api/Dish")
-	fmt.Println("  PUT  /api/Order")
-	fmt.Println("  PUT /api/Sections")
-	fmt.Println("  PUT /api/User")
-	fmt.Println("  POST  /api/Item")
-	fmt.Println("  PUT /api/Item")
+	fmt.Println("POST\t/api/User")
+	fmt.Println("POST\t/api/User/login")
+	fmt.Println("POST\t/api/Order")
+	fmt.Println("PUT \t/api/Dish")
+	fmt.Println("PUT \t/api/Order")
+	fmt.Println("PUT \t/api/Sections")
+	fmt.Println("PUT \t/api/User")
+	fmt.Println("POST\t/api/Item")
+	fmt.Println("PUT \t/api/Item")
 }

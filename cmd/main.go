@@ -25,7 +25,7 @@ func main() {
 
 	api.PrintRoutes()
 	server := &http.Server{
-		Addr:    ":" + config.ServerPort,
+		Addr:    ":" + config.EnvConfig.ServerPort,
 		Handler: router,
 	}
 	go func() {

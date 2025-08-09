@@ -1,11 +1,12 @@
 package user
 
 import (
-	"github.com/golang-jwt/jwt/v5"
-	"golang.org/x/crypto/bcrypt"
 	"mvc/pkg/config"
 	"mvc/pkg/utils"
 	"time"
+
+	"github.com/golang-jwt/jwt/v5"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func GenerateHash(password string) (string, error) {
@@ -22,7 +23,7 @@ func GenerateJWT(userId int) string {
 	var JWT, err = jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"UserId":    userId,
 		"Timestamp": time.Now().Unix() / 60,
-	}).SignedString([]byte(config.JWTSecret))
+	}).SignedString([]byte(config.EnvConfig.JWTSecret))
 
 	utils.LogIfErr(err, "JWT Signing Error")
 
@@ -35,7 +36,7 @@ func JWTGetUserId(JWT string) int {
 	var timestamp int
 	var err error
 	_, err = jwt.ParseWithClaims(JWT, claims, func(token *jwt.Token) (interface{}, error) {
-		return []byte(config.JWTSecret), nil
+		return []byte(config.EnvConfig.JWTSecret), nil
 	})
 
 	if err != nil {
