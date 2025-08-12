@@ -111,7 +111,7 @@ func VerifyCreateOrder(w http.ResponseWriter, r *http.Request) *http.Request {
 		utils.RespondFailure(w, http.StatusBadRequest, "Invalid Order")
 		return nil
 	}
-	if order.Items == nil {
+	if order.Items == nil || len(order.Items) == 0 {
 		utils.RespondFailure(w, http.StatusBadRequest, "Empty Order")
 		return nil
 	}

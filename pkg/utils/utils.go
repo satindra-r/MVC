@@ -3,9 +3,11 @@ package utils
 import (
 	"errors"
 	"fmt"
-	"github.com/gorilla/mux"
 	"log"
 	"net/http"
+
+	"github.com/golang-migrate/migrate/v4"
+	"github.com/gorilla/mux"
 )
 
 type Middleware func(w http.ResponseWriter, r *http.Request) *http.Request
@@ -18,7 +20,7 @@ func LogIfErr(e error, msg string) bool {
 }
 
 func PanicIfErr(e error, msg string) {
-	if e != nil {
+	if e != nil && !errors.Is(e, migrate.ErrNoChange) {
 		log.Panicf(msg+": %v\n", e)
 	}
 }

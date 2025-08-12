@@ -1,5 +1,3 @@
-USE `ChefDB`;
-
 CREATE TABLE `Items` (
   `ItemId` int(11) NOT NULL,
   `ItemName` varchar(255) DEFAULT NULL,

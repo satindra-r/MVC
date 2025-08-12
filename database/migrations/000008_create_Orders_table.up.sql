@@ -1,5 +1,3 @@
-USE `ChefDB`;
-
 CREATE TABLE `Orders` (
   `OrderId` int(11) NOT NULL,
   `UserId` int(11) DEFAULT NULL,

@@ -1,4 +1,3 @@
-USE `ChefDB`;
 CREATE TABLE `Users` (
                          `UserId` int(11) NOT NULL,
                          `UserName` varchar(255) DEFAULT NULL,

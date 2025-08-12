@@ -17,7 +17,7 @@ func DBCreateUser(w http.ResponseWriter, r *http.Request) *http.Request {
 	var hash string
 	hash, _ = models.GetUserCredentials(user.UserName)
 
-	if len(hash) == 0 {
+	if len(hash) != 0 {
 		utils.RespondFailure(w, http.StatusForbidden, "Username already taken")
 		return nil
 	}

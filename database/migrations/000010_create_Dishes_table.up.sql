@@ -1,5 +1,3 @@
-USE `ChefDB`;
-
 CREATE TABLE `Dishes` (
   `DishId` int(11) NOT NULL,
   `ItemId` int(11) DEFAULT NULL,

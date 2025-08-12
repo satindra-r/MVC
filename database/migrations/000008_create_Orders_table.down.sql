@@ -1,2 +1,1 @@
-USE `ChefDB`;
 DROP TABLE IF EXISTS `Orders`;

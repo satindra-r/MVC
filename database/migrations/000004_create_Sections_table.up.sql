@@ -1,5 +1,3 @@
-USE `ChefDB`;
-
 CREATE TABLE `Sections` (
   `SectionId` int(11) NOT NULL,
   `SectionName` varchar(255) DEFAULT NULL,

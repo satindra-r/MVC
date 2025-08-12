@@ -1,0 +1,40 @@
+services:
+  mvc:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mvc_container
+    restart: always
+    ports:
+      - "8090:8090"
+    environment:
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_HOST: "db"
+      MYSQL_PORT: ${MYSQL_PORT}
+      JWT_SECRET: ${JWT_SECRET}
+      SERVER_ADDRESS: :8090
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: mysql:latest
+    container_name: db
+    environment:
+      MYSQL_ROOT_PASSWORD: pass
+      MYSQL_USER: user
+      MYSQL_PASSWORD: pass
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: [ "CMD-SHELL", "mysqladmin ping -h localhost -u root -p$${MYSQL_ROOT_PASSWORD}" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+volumes:
+  mysql_data:
+    driver: local
