@@ -38,6 +38,7 @@
             {{range $i,$section := .Sections}}
                 <div class="flex flex-row items-center justify-start gap-4 h-[5vh]">
                     <input id="checkbox {{ $i }}" type="checkbox" data-SectionId="{{$section.SectionId}}">
+                    <!--inline css used purely because other options require too much logic and make it slower-->
                     <div class="w-[2vh] h-[2vh] rounded-full"
                          style="background-color: hsl({{$section.Colour}},50%,75%)"></div>
                     <label for="checkbox {{ $i }}">{{$section.SectionName}}</label>
@@ -69,7 +70,7 @@
             </div>
 
             {{range $i, $item := .Items}}
-                <div class="flex flex-row justify-between w-full h-[10%] border-gray-600 border items-center px-8">
+                <div class="flex flex-row justify-between w-full h-[9%] border-gray-600 border items-center px-8">
                     <input id="itemName {{ $i }}" class="w-[10%] bg-slate-800"
                            placeholder="{{$item.ItemName}}">
 

@@ -93,12 +93,16 @@ pageCounter.addEventListener("keydown", function (e) {
     }
 })
 
-document.getElementById("Order").addEventListener("click", async function (e) {
+document.getElementById("Order").addEventListener("click", async function () {
     savedItems = JSON.parse(localStorage.getItem("Items"));
-    let orderedItems = Object();
+    let orderedItems = []
     for (let i in savedItems) {
         if (savedItems[i]["count"] > 0) {
-            orderedItems[i] = savedItems[i];
+            orderedItems.push({
+                "itemId": parseInt(i),
+                "splInstructions": savedItems[i]["splInstructions"],
+                "count": savedItems[i]["count"]
+            })
         }
     }
     let res = await fetch("/api/order", {
@@ -110,7 +114,7 @@ document.getElementById("Order").addEventListener("click", async function (e) {
     }
 })
 
-document.getElementById("logout").addEventListener("click", function (e) {
+document.getElementById("logout").addEventListener("click", function () {
     localStorage.clear();
     document.cookie = 'JWT=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
 });

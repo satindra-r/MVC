@@ -27,6 +27,7 @@ func GetAllOrders(page int) []OrderDishes {
 	if utils.LogIfErr(err, "DB error") {
 		return nil
 	}
+	defer rows.Close()
 
 	for rows.Next() {
 		var order OrderDishes

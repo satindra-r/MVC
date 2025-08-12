@@ -126,12 +126,13 @@ func GetNextOrderID() int {
 func GetItemPrices() ([]float64, error) {
 	var rows *sql.Rows
 	var err error
+	var prices []float64
 
 	rows, err = DB.Query(`select Items.Price from Items`)
 	if utils.LogIfErr(err, "DB error") {
 		return nil, err
 	}
-	var prices []float64
+	defer rows.Close()
 
 	for rows.Next() {
 		var price float64
@@ -187,6 +188,7 @@ func GetItems(page int, filters int) []SectionedItems {
 			return nil
 		}
 	}
+	defer rows.Close()
 
 	var items []SectionedItems
 
@@ -213,6 +215,8 @@ func GetSections() []Section {
 	if utils.LogIfErr(err, "DB error") {
 		return nil
 	}
+	defer rows.Close()
+
 	var sections []Section
 	var phiInv = (math.Sqrt(5) - 1) / 2
 	for rows.Next() {
@@ -235,6 +239,7 @@ func GetUserOrders(userId int, page int) []OrderDishes {
 	if utils.LogIfErr(err, "DB error") {
 		return nil
 	}
+	defer rows.Close()
 
 	for rows.Next() {
 		var order OrderDishes
@@ -279,6 +284,7 @@ where Orders.OrderId = ?`, orderId)
 	if utils.LogIfErr(err, "DB error") {
 		return OrderDishes{}, err
 	}
+	defer dishRows.Close()
 
 	for dishRows.Next() {
 		var dish DishItem

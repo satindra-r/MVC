@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="/static/css/styles.css">
     <script src="/static/js/sections.js" defer></script>
     <title>
-        Admin Items
+        Admin Sections
     </title>
 </head>
 <body class="bg-slate-900 h-screen font-mono">
@@ -21,27 +21,51 @@
         <a href="/users">Users</a>
         <a id="logout" href="/login">Log Out</a>
     </div>
-    <div class="h-[10vh]"></div>
     <div class="flex flex-col w-full h-[80vh] overflow-y-scroll">
+        <div class="flex flex-row align-middle justify-between w-full h-[10vh] min-h-[10vh] border-gray-600 border items-center px-8">
+            <div class="flex flex-row items-center justify-start gap-2 w-[30%] h-full">
+                <div class="w-[2vh] h-[2vh] rounded-full"></div>
+                <input id="SectionName" class="w-[25%] bg-slate-800" placeholder="Section Name">
+            </div>
+            <div class="flex flex-row w-[10%] h-3/4 items-center">
+                <div class="flex flex-col w-[50%] h-full">
+                </div>
+                <button id="button add" class="border rounded-full w-[50%] h-[75%]">
+                    Add
+                </button>
+            </div>
+        </div>
         {{range $i, $section := .Sections}}
-            <div class="flex flex-row align-middle justify-between w-full h-[10vh] border-gray-600 border items-center px-8">
-                <div class="flex flex-row items-center justify-start gap-2 w-[10%] h-full">
+            <div class="flex flex-row align-middle justify-between w-full h-[10vh] min-h-[10vh] border-gray-600 border items-center px-8">
+                <div class="flex flex-row items-center justify-start gap-2 w-[30%] h-full">
+                    <!--inline css used purely because other options require too much logic and make it slower-->
                     <div class="w-[2vh] h-[2vh] rounded-full"
                          style="background-color: hsl({{$section.Colour}},50%,75%)"></div>
                     {{$section.SectionName}}
                 </div>
-                <div class="flex flex-col w-[5%] h-3/4">
-                    <button id="button up {{ $i }}" data-SectionId="{{$section.SectionId}}"
-                            class="border rounded-full h-1/2 disabled:bg-gray-800 disabled:text-gray-400">
-                        ^
-                    </button>
-                    <button id="button down {{ $i }}" data-SectionId="{{$section.SectionId}}"
-                            class="border rounded-full h-1/2 disabled:bg-gray-800 disabled:text-gray-400">
-                        v
+                <div class="flex flex-row w-[10%] h-3/4 items-center">
+                    <div class="flex flex-col w-[50%] h-full">
+                        <button id="button up {{ $i }}" data-SectionId="{{$section.SectionId}}"
+                                class="border rounded-full w-full h-1/2 disabled:bg-gray-800 disabled:text-gray-400">
+                            ^
+                        </button>
+                        <button id="button down {{ $i }}" data-SectionId="{{$section.SectionId}}"
+                                class="border rounded-full w-full h-1/2 disabled:bg-gray-800 disabled:text-gray-400">
+                            v
+                        </button>
+                    </div>
+                    <button id="button del {{ $i }}" data-SectionId="{{$section.SectionId}}"
+                            class="border rounded-full w-[50%] h-[75%]">
+                        Delete
                     </button>
                 </div>
             </div>
         {{end}}
+    </div>
+    <div class="flex flex-row w-full h-[10%] items-center justify-end px-8 bg-slate-800">
+        <div id="Error" class="flex items-center justify-center bg-red-400 rounded-l w-[30%] h-[70%] hidden">
+
+        </div>
     </div>
 </div>
 </body>

@@ -47,7 +47,19 @@ func VerifyPaidOrder(w http.ResponseWriter, r *http.Request) *http.Request {
 
 	return r
 }
+func VerifyCreateSection(w http.ResponseWriter, r *http.Request) *http.Request {
+	var sectionName string
+	var hasErr bool
 
+	sectionName, hasErr = utils.GetOrReflect(w, r, "sectionName")
+	if hasErr {
+		return nil
+	}
+
+	r = r.WithContext(context.WithValue(r.Context(), "SectionName", sectionName))
+
+	return r
+}
 func VerifySwapSections(w http.ResponseWriter, r *http.Request) *http.Request {
 	var sectionId1Str string
 	var sectionId2Str string
@@ -85,7 +97,28 @@ func VerifySwapSections(w http.ResponseWriter, r *http.Request) *http.Request {
 
 	return r
 }
+func VerifyDeleteSection(w http.ResponseWriter, r *http.Request) *http.Request {
+	var sectionIdStr string
+	var sectionId int
+	var hasErr bool
+	var err error
 
+	sectionIdStr, hasErr = utils.GetOrReflect(w, r, "sectionId")
+	if hasErr {
+		return nil
+	}
+
+	sectionId, err = strconv.Atoi(sectionIdStr)
+
+	if err != nil {
+		utils.RespondFailure(w, http.StatusBadRequest, "Invalid sectionId")
+		return nil
+	}
+
+	r = r.WithContext(context.WithValue(r.Context(), "SectionId", sectionId))
+
+	return r
+}
 func VerifySetUserRole(w http.ResponseWriter, r *http.Request) *http.Request {
 	var userIdStr string
 	var role string

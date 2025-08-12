@@ -19,6 +19,39 @@ func SetPaidOrder(orderId int, paid int) error {
 	return err
 }
 
+func GetNextSectionId() int {
+	row := DB.QueryRow(`select max(SectionId) from Sections`)
+	var sectionId int
+	var err error
+
+	err = row.Scan(&sectionId)
+
+	if err != nil {
+		return 1
+	}
+
+	return sectionId + 1
+}
+
+func GetNextSectionOrder() int {
+	row := DB.QueryRow(`select max(SectionOrder) from Sections`)
+	var sectionOrder int
+	var err error
+
+	err = row.Scan(&sectionOrder)
+
+	if err != nil {
+		return 1
+	}
+
+	return sectionOrder + 1
+}
+
+func CreateSection(sectionId int, sectionOrder int, sectionName string) error {
+	_, err := DB.Exec(`insert into Sections(SectionId,SectionOrder,SectionName) value (?, ?, ?)`, sectionId, sectionOrder, sectionName)
+	return err
+}
+
 func SwapSections(sectionId1 int, sectionId2 int) error {
 	var rows *sql.Rows
 	var err error
@@ -26,10 +59,17 @@ func SwapSections(sectionId1 int, sectionId2 int) error {
 	var sectionOrder1 int
 	var sectionOrder2 int
 
-	rows, err = DB.Query(`select SectionId, SectionOrder from Sections where SectionId = ? or SectionId = ?`, sectionId1, sectionId2)
+	tx, err := DB.Begin()
 	if err != nil {
 		return err
 	}
+	defer tx.Rollback()
+
+	rows, err = tx.Query(`select SectionId, SectionOrder from Sections where SectionId = ? or SectionId = ?`, sectionId1, sectionId2)
+	if err != nil {
+		return err
+	}
+	defer rows.Close()
 
 	for rows.Next() {
 		var sectionId int
@@ -46,21 +86,51 @@ func SwapSections(sectionId1 int, sectionId2 int) error {
 		}
 	}
 
-	_, err = DB.Exec(`update Sections set sectionOrder = ? where SectionId = ?`, -1, sectionId1)
+	_, err = tx.Exec(`update Sections set sectionOrder = ? where SectionId = ?`, -1, sectionId1)
 
 	if err != nil {
 		return err
 	}
 
-	_, err = DB.Exec(`update Sections set sectionOrder = ? where SectionId = ?`, sectionOrder1, sectionId2)
+	_, err = tx.Exec(`update Sections set sectionOrder = ? where SectionId = ?`, sectionOrder1, sectionId2)
 
 	if err != nil {
 		return err
 	}
 
-	_, err = DB.Exec(`update Sections set sectionOrder = ? where SectionId = ?`, sectionOrder2, sectionId1)
+	_, err = tx.Exec(`update Sections set sectionOrder = ? where SectionId = ?`, sectionOrder2, sectionId1)
+	if err != nil {
+		return err
+	}
 
-	return err
+	return tx.Commit()
+}
+
+func DeleteSection(sectionId int) error {
+	tx, err := DB.Begin()
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
+
+	if sectionId == 1 {
+		_, err := tx.Exec(`update Items set SectionId = 2 where SectionId = ?`, sectionId)
+		if err != nil {
+			return err
+		}
+
+	} else {
+		_, err := tx.Exec(`update Items set SectionId = 1 where SectionId = ?`, sectionId)
+		if err != nil {
+			return err
+		}
+
+	}
+	_, err = tx.Exec(`delete from Sections where SectionId = ?`, sectionId)
+	if err != nil {
+		return err
+	}
+	return tx.Commit()
 }
 
 func SetUserRole(userId int, role string) error {
@@ -119,6 +189,8 @@ func GetUsers(page int) []User {
 	if utils.LogIfErr(err, "DB error") {
 		return nil
 	}
+	defer rows.Close()
+
 	var users []User
 
 	for rows.Next() {

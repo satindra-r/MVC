@@ -13,9 +13,6 @@
     </title>
 </head>
 <body class="bg-slate-900 h-screen font-mono">
-{{/*
-{{ phiInv := (math.sqrt(5) - 1) / 2 }}
-*/}}
 <input type="hidden" id="filters" data-filters="{{.Filters}}">
 <div class="flex flex-col items-center justify-center h-screen text-white">
     <div class="flex flex-row bg-slate-800 w-full h-[10%] text-teal-500 items-center justify-end gap-16 px-32">
@@ -37,9 +34,9 @@
                 Filters
             </div>
             {{ range $i, $section := .Sections }}
-
                 <div class="flex flex-row items-center justify-start gap-4 h-[5vh]">
                     <input id="checkbox {{ $i }}" type="checkbox" data-SectionId="{{ $section.SectionId }}">
+                    <!--inline css used purely because other options require too much logic and make it slower-->
                     <div class="w-[2vh] h-[2vh] rounded-full" style="background-color: hsl({{$section.Colour}},50%,75%)"></div>
                     <label for="checkbox {{ $i }}">{{ $section.SectionName }}</label>
                 </div>
@@ -52,6 +49,7 @@
                         {{$item.ItemName}}
                     </div>
                     <div class="flex flex-row items-center justify-start gap-2 w-[10%] h-full">
+                        <!--inline css used purely because other options require too much logic and make it slower-->
                         <div class="w-[2vh] h-[2vh] rounded-full" style="background-color: hsl({{$item.Colour}},50%,75%)"></div>
                         {{ $item.SectionName }}
                     </div>
