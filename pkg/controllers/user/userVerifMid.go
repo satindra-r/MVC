@@ -72,7 +72,7 @@ func VerifyCreateUser(w http.ResponseWriter, r *http.Request) *http.Request {
 		return nil
 	}
 
-	user.Hash, err = GenerateHash(r.FormValue("Password"))
+	user.Hash, err = GenerateHash(password)
 
 	if errors.Is(err, bcrypt.ErrPasswordTooLong) {
 		utils.RespondFailure(w, http.StatusBadRequest, "Password too long")

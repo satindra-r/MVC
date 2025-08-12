@@ -16,7 +16,7 @@ func GenerateHash(password string) (string, error) {
 
 func CheckUserPassword(hash string, password string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
-	return (err != nil)
+	return (err == nil)
 }
 
 func GenerateJWT(userId int) string {

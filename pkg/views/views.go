@@ -129,6 +129,7 @@ func RenderUsers(w http.ResponseWriter, r *http.Request) *http.Request {
 		{
 			var pageStr = r.URL.Query().Get("page")
 			var page, _ = strconv.Atoi(pageStr)
+			page = max(1, page)
 			var userId = r.Context().Value("UserId").(int)
 			renderer.AdminRenderUsers(w, userId, page)
 			return r

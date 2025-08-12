@@ -50,7 +50,7 @@
                         <input id="radio 2 {{ $i }}" name="radio {{ $i }}"
                                data-UserId="{{ $user.UserId }}"
                                type="radio"
-                                {{if eq $user.Role "User"}}
+                                {{if eq $user.Role "Chef"}}
                                     checked
                                 {{end}}
                                 {{if eq $user.UserId $.AdminUserId}}
@@ -62,7 +62,7 @@
                         <input id="radio 3 {{ $i }}" name="radio {{ $i }}"
                                data-UserId="{{ $user.UserId }}"
                                type="radio"
-                                {{if eq $user.Role "User"}}
+                                {{if eq $user.Role "Admin"}}
                                     checked
                                 {{end}}
                                 {{if eq $user.UserId $.AdminUserId}}
