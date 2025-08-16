@@ -1,6 +1,6 @@
 # MVC
 
-run `./setup.sh` to set up DB with migrations and `docker compose up` to start the server
+run `docker compose up` to start the server
 
 run `./test.sh` to run testbench
 

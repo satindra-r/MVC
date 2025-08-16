@@ -8,11 +8,11 @@ services:
     ports:
       - "8090:8090"
     environment:
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_USER: "user"
+      MYSQL_PASSWORD: "pass"
       MYSQL_HOST: "db"
-      MYSQL_PORT: ${MYSQL_PORT}
-      JWT_SECRET: ${JWT_SECRET}
+      MYSQL_PORT: 3306
+      JWT_SECRET: "sploink"
       SERVER_ADDRESS: :8090
     depends_on:
       db:
