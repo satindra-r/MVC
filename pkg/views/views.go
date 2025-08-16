@@ -1,10 +1,14 @@
 package views
 
 import (
+	"bytes"
 	"mvc/pkg/controllers/renderer"
+	"mvc/pkg/utils"
 	"net/http"
 	"strconv"
 )
+
+var Cache bytes.Buffer
 
 func RenderLogin(w http.ResponseWriter, r *http.Request) *http.Request {
 	renderer.UserRenderLogin(w)
@@ -17,11 +21,9 @@ func RenderSignUp(w http.ResponseWriter, r *http.Request) *http.Request {
 }
 
 func RenderItems(w http.ResponseWriter, r *http.Request) *http.Request {
-
 	switch r.Context().Value("Role") {
 	case "Admin":
 		{
-
 			var pageStr = r.URL.Query().Get("page")
 			var page, _ = strconv.Atoi(pageStr)
 			page = max(1, page)
@@ -30,7 +32,15 @@ func RenderItems(w http.ResponseWriter, r *http.Request) *http.Request {
 			var filters, _ = strconv.Atoi(filtersStr)
 			filters = max(0, filters)
 
-			renderer.AdminRenderItems(w, page, filters)
+			var search = r.URL.Query().Get("search")
+			if page == 1 && filters == 0 && Cache.Len() > 0 {
+				_, err := w.Write(Cache.Bytes())
+				if utils.ReflectAndLogErr(w, http.StatusInternalServerError, err, "Connection Error") {
+					return nil
+				}
+			} else {
+				renderer.AdminRenderItems(&Cache, w, page, filters, search)
+			}
 			return r
 		}
 	case "Chef":
@@ -49,7 +59,8 @@ func RenderItems(w http.ResponseWriter, r *http.Request) *http.Request {
 			var filters, _ = strconv.Atoi(filtersStr)
 			filters = max(0, filters)
 
-			renderer.UserRenderItems(w, page, filters)
+			var search = r.URL.Query().Get("search")
+			renderer.UserRenderItems(w, page, filters, search)
 			return r
 		}
 	}

@@ -5,6 +5,9 @@ let pageCounter = document.getElementById("page");
 const pageNo = new URLSearchParams(window.location.search).get("page");
 let savedItems = JSON.parse(localStorage.getItem("Items")) || Object();
 let savedFilters = document.getElementById("filters")["dataset"]["filters"];
+let searchBox = document.getElementById("search");
+const searchQuery = searchBox.value;
+
 for (let i = 0; i < 10; i++) {
     let counter = document.getElementById("counter " + i);
     if (counter) {
@@ -33,7 +36,9 @@ for (let i = 0; i < 10; i++) {
     }
 }
 if (counters.length === 0) {
-    document.location.replace("/items?page=" + Math.max(0, parseInt(pageCounter.value - 1 || "1")));
+    if (parseInt(pageCounter.value) !== 1) {
+        document.location.replace("/items?page=" + Math.max(0, parseInt(pageCounter.value - 1 || "1")) + "&filters=" + savedFilters + "&search=" + searchQuery);
+    }
 }
 for (let i = 0; i < counters.length; i++) {
     counters[i].addEventListener("input", function (e) {
@@ -75,25 +80,33 @@ for (let i = 0; i < instructions.length; i++) {
 for (let i = 0; i < checkboxes.length; i++) {
     checkboxes[i].addEventListener("click", function (e) {
         savedFilters ^= (1 << (e.target["dataset"]["sectionid"] - 1));
-        document.location.href = "/items?page=" + pageCounter.value + "&filters=" + savedFilters;
+        document.location.href = "/items?page=" + pageCounter.value + "&filters=" + savedFilters + "&search=" + searchQuery;
     })
 }
 
 pageCounter.addEventListener("click", function (e) {
     if (pageCounter.value !== pageNo) {
-        document.location.href = "/items?page=" + e.target.value + "&filters=" + savedFilters;
+        document.location.href = "/items?page=" + e.target.value + "&filters=" + savedFilters + "&search=" + searchQuery;
     }
 })
 
 pageCounter.addEventListener("keydown", function (e) {
     if (e.key === "Enter") {
         if (pageCounter.value !== pageNo) {
-            document.location.href = "/items?page=" + e.target.value + "&filters=" + savedFilters;
+            document.location.href = "/items?page=" + e.target.value + "&filters=" + savedFilters + "&search=" + searchQuery;
         }
     }
 })
 
-document.getElementById("Order").addEventListener("click", async function () {
+searchBox.addEventListener("keydown", function (e) {
+    if (e.key === "Enter") {
+        if (searchBox.value !== searchQuery) {
+            document.location.href = "/items?page=" + pageCounter.value + "&filters=" + savedFilters + "&search=" + e.target.value;
+        }
+    }
+})
+
+document.getElementById("order").addEventListener("click", async function () {
     savedItems = JSON.parse(localStorage.getItem("Items"));
     let orderedItems = []
     for (let i in savedItems) {

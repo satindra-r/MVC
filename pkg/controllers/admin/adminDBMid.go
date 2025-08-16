@@ -3,6 +3,7 @@ package admin
 import (
 	"mvc/pkg/models"
 	"mvc/pkg/utils"
+	"mvc/pkg/views"
 	"net/http"
 )
 
@@ -18,6 +19,7 @@ func DBSetPaidOrder(w http.ResponseWriter, r *http.Request) *http.Request {
 }
 
 func DBCreateSection(w http.ResponseWriter, r *http.Request) *http.Request {
+	views.Cache.Truncate(0)
 	var sectionName = r.Context().Value("SectionName").(string)
 	var sectionId = models.GetNextSectionId()
 	var sectionOrder = models.GetNextSectionOrder()
@@ -30,6 +32,7 @@ func DBCreateSection(w http.ResponseWriter, r *http.Request) *http.Request {
 	return r
 }
 func DBSwapSections(w http.ResponseWriter, r *http.Request) *http.Request {
+	views.Cache.Truncate(0)
 	var sectionId1 = r.Context().Value("SectionId1").(int)
 	var sectionId2 = r.Context().Value("SectionId2").(int)
 	var err error
@@ -41,6 +44,7 @@ func DBSwapSections(w http.ResponseWriter, r *http.Request) *http.Request {
 	return r
 }
 func DBDeleteSection(w http.ResponseWriter, r *http.Request) *http.Request {
+	views.Cache.Truncate(0)
 	var sectionId = r.Context().Value("SectionId").(int)
 	var err error
 	err = models.DeleteSection(sectionId)
@@ -63,6 +67,7 @@ func DBSetUserRole(w http.ResponseWriter, r *http.Request) *http.Request {
 }
 
 func DBCreateItem(w http.ResponseWriter, r *http.Request) *http.Request {
+	views.Cache.Truncate(0)
 	var item = r.Context().Value("Item").(models.Item)
 	var err = models.CreateItem(item)
 	if utils.ReflectAndLogErr(w, http.StatusInternalServerError, err, "Database Error") {
@@ -73,6 +78,7 @@ func DBCreateItem(w http.ResponseWriter, r *http.Request) *http.Request {
 }
 
 func DBEditItem(w http.ResponseWriter, r *http.Request) *http.Request {
+	views.Cache.Truncate(0)
 	var item = r.Context().Value("Item").(models.Item)
 	var err = models.EditItem(item)
 	if utils.ReflectAndLogErr(w, http.StatusInternalServerError, err, "Database Error") {

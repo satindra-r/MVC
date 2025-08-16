@@ -4,7 +4,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Mono:wght@100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@100..900&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="/static/css/styles.css">
     <script src="/static/js/bill.js" defer></script>
@@ -12,12 +12,15 @@
         Bill
     </title>
 </head>
-<body class="bg-slate-900 h-screen font-mono">
+<body class="bg-slate-900 h-screen font-noto">
 <div class="flex flex-col items-center gap-[10vh] overflow-y-auto">
-    <div class="flex flex-row bg-slate-800 w-full h-[10vh] text-teal-500 items-center justify-end gap-16 px-32">
-        <a href="/items">Items</a>
-        <a href="/orders">Orders</a>
-        <a id="logout" href="/login">Log Out</a>
+    <div class="flex flex-row bg-slate-800 w-full h-[10vh] text-white items-center justify-between gap-16 px-32">
+        You are Logged in as: User
+        <div class="flex flex-row bg-slate-800 w-[50%] h-full text-teal-500 items-center justify-end gap-16">
+            <a href="/items">Items</a>
+            <a href="/orders">Orders</a>
+            <a id="logout" href="/login">Log Out</a>
+        </div>
     </div>
     <div class="flex flex-col items-center justify-center border-gray-500 border w-[50%] ">
         <div class="flex items-center justify-center rounded-t-3xl w-full h-[7vh] text-white text-2xl font-bold">

@@ -1,6 +1,7 @@
 package renderer
 
 import (
+	"bytes"
 	"html/template"
 	"mvc/pkg/models"
 	"mvc/pkg/utils"
@@ -8,17 +9,21 @@ import (
 	"strconv"
 )
 
-func AdminRenderItems(w http.ResponseWriter, page int, filters int) {
-	var temp = template.Must(template.ParseFiles("pkg/views/adminItems.gohtml"))
+var renderTemp = template.Must(template.ParseFiles("pkg/views/adminItems.gohtml"))
+
+func AdminRenderItems(cache *bytes.Buffer, w http.ResponseWriter, page int, filters int, search string) {
 
 	data := map[string]interface{}{
-		"Items":    models.GetItems(page, filters),
+		"Items":    models.GetItems(page, filters, search),
 		"Sections": models.GetSections(),
 		"Page":     strconv.Itoa(page),
 		"Filters":  strconv.Itoa(filters),
 	}
-	err := temp.Execute(w, data)
-	utils.ReflectAndLogErr(w, http.StatusInternalServerError, err, "Connection Error")
+	err := renderTemp.Execute(w, data)
+	if utils.ReflectAndLogErr(w, http.StatusInternalServerError, err, "Connection Error") {
+		return
+	}
+	_ = renderTemp.Execute(cache, data)
 
 }
 func AdminRenderOrders(w http.ResponseWriter, page int) {

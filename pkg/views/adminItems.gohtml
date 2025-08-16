@@ -4,7 +4,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Mono:wght@100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@100..900&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="/static/css/styles.css">
     <script src="/static/js/adminItems.js" defer></script>
@@ -12,15 +12,18 @@
         Items
     </title>
 </head>
-<body class="bg-slate-900 h-screen font-mono">
+<body class="bg-slate-900 h-screen font-noto">
 <input type="hidden" id="filters" data-filters="{{.Filters}}">
 <div class="flex flex-col items-center justify-around h-screen text-white">
-    <div class="flex flex-row bg-slate-800 w-full h-[10%] text-teal-500 items-center justify-end gap-16 px-32">
-        <a href="/items">Items</a>
-        <a href="/sections">Sections</a>
-        <a href="/orders">Orders</a>
-        <a href="/users">Users</a>
-        <a id="logout" href="/login">Log Out</a>
+    <div class="flex flex-row bg-slate-800 w-full h-[10%] text-white items-center justify-between gap-16 px-32">
+        You are Logged in as: Admin
+        <div class="flex flex-row bg-slate-800 w-[50%] h-full text-teal-500 items-center justify-end gap-16">
+            <a href="/items">Items</a>
+            <a href="/sections">Sections</a>
+            <a href="/orders">Orders</a>
+            <a href="/users">Users</a>
+            <a id="logout" href="/login">Log Out</a>
+        </div>
     </div>
 
     <div class="flex flex-row items-center w-full h-[10%] px-8">
@@ -60,11 +63,10 @@
 
                 <div class="flex flex-row justify-around text-right w-[5%]">
                     ₹<input id="price -1" class="text-right w-full bg-slate-800" placeholder="Price">
-
                 </div>
-                <div class="w-[5%] text-center">
-                    <button id="edit -1" class="w-full border-gray-500 border-2  rounded-full">
-                        Add Item
+                <div class="w-[5%] h-[75%] text-center">
+                    <button id="edit -1" class="w-full h-full border-gray-500 border-2 rounded-full">
+                        +
                     </button>
                 </div>
             </div>
@@ -93,10 +95,10 @@
                                 placeholder="{{$item.Price}}">
 
                     </div>
-                    <div class="w-[5%] text-center">
+                    <div class="w-[5%] h-[75%] text-center">
                         <button id="edit {{ $i }}" data-Itemid="{{$item.ItemId}}"
-                                class="w-full border-gray-500 border-2 rounded-full">
-                            Save Item
+                                class="w-full h-full border-gray-500 border-2 rounded-full">
+                            🖪
                         </button>
                     </div>
                 </div>

@@ -2,6 +2,7 @@ package models
 
 import (
 	"database/sql"
+	"fmt"
 	"math"
 	"mvc/pkg/utils"
 )
@@ -129,7 +130,7 @@ func GetItemPrices() ([]float64, error) {
 	var prices []float64
 
 	rows, err = DB.Query(`select Items.Price from Items`)
-	if utils.LogIfErr(err, "DB error") {
+	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
@@ -137,7 +138,7 @@ func GetItemPrices() ([]float64, error) {
 	for rows.Next() {
 		var price float64
 		err = rows.Scan(&price)
-		if utils.LogIfErr(err, "DB error") {
+		if err != nil {
 			return nil, err
 		}
 		prices = append(prices, price)
@@ -151,12 +152,54 @@ func CreateDish(dish Dish) error {
 	return err
 }
 
+func EditDishCount(dishId int, count int) error {
+	tx, err := DB.Begin()
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
+	row := tx.QueryRow(`select DishCount,OrderId,Price from Dishes,Items where DishId = ? and Dishes.ItemId = Items.ItemId`, dishId)
+	var dishCount int
+	var orderId int
+	var itemPrice float64
+	err = row.Scan(&dishCount, &orderId, &itemPrice)
+	if err != nil {
+		return err
+	}
+	if dishCount+count <= 0 {
+		return fmt.Errorf("count is out of range")
+	}
+	_, err = tx.Exec(`update Dishes set DishCount = ? where DishId = ?`, dishCount+count, dishId)
+	if err != nil {
+		return err
+	}
+	row = tx.QueryRow(`select Price from Orders where OrderId = ?`, orderId)
+	var orderPrice float64
+	err = row.Scan(&orderPrice)
+	if err != nil {
+		return err
+	}
+	_, err = tx.Exec(`update Orders set Price = ? where OrderId = ?`, orderPrice+itemPrice*(float64)(count), orderId)
+	if err != nil {
+		return err
+	}
+	err = tx.Commit()
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func CreateOrder(order Order) error {
-	_, err := DB.Exec(`insert into Orders(OrderId, UserId, Price, Paid) value (?, ?, ?, 0)`, order.OrderId, order.UserId, order.Price)
+	_, err := DB.Exec(`
+	insert
+	into
+	Orders(OrderId, UserId, Price, Paid)
+	value(?, ?, ?, 0)`, order.OrderId, order.UserId, order.Price)
 	return err
 }
 
-func GetItems(page int, filters int) []SectionedItems {
+func GetItems(page int, filters int, search string) []SectionedItems {
 	var rows *sql.Rows
 	var err error
 	if filters > 0 {
@@ -178,12 +221,42 @@ func GetItems(page int, filters int) []SectionedItems {
 		}
 		questionMarks += ")"
 
-		rows, err = DB.Query(`select ItemId, ItemName, Items.SectionId, Price,SectionName from Items,Sections where Items.SectionId=Sections.SectionId and Items.SectionId in `+questionMarks+` order by SectionId, ItemId limit 10 offset ?`, append(filtersList, (page-1)*10)...)
+		rows, err = DB.Query(`
+	select ItemId, ItemName, Items.SectionId, Price, SectionName
+		from
+		Items, Sections
+		where
+		Items.SectionId = Sections.SectionId
+		and
+		ItemName
+		regexp ? and
+		Items.SectionId
+		in
+		`+questionMarks+`
+		order
+		by
+		SectionId, ItemId
+		limit
+		10
+		offset ?`, append([]any{search}, append(filtersList, (page-1)*10)...)...)
 		if utils.LogIfErr(err, "DB error") {
 			return nil
 		}
 	} else {
-		rows, err = DB.Query(`select ItemId, ItemName, Items.SectionId, Price,SectionName from Items,Sections where Items.SectionId=Sections.SectionId order by SectionId, ItemId limit 10 offset ?`, (page-1)*10)
+		rows, err = DB.Query(`
+		select ItemId, ItemName, Items.SectionId, Price, SectionName
+			from
+			Items, Sections
+			where
+			Items.SectionId = Sections.SectionId
+			and
+			ItemName
+			regexp ? order
+			by
+			SectionId, ItemId
+			limit
+			10
+			offset ?`, search, (page-1)*10)
 		if utils.LogIfErr(err, "DB error") {
 			return nil
 		}
@@ -208,10 +281,13 @@ func GetItems(page int, filters int) []SectionedItems {
 
 func GetSections() []Section {
 	rows, err := DB.Query(`
-		select SectionId, SectionName, SectionOrder
-			from
-			Sections order by SectionOrder
-			`)
+			select SectionId, SectionName, SectionOrder
+				from
+				Sections
+				order
+				by
+				SectionOrder
+				`)
 	if utils.LogIfErr(err, "DB error") {
 		return nil
 	}
@@ -234,8 +310,22 @@ func GetSections() []Section {
 
 func GetUserOrders(userId int, page int) []OrderDishes {
 	var orders []OrderDishes
-	rows, err := DB.Query(`select Orders.OrderId, Price, Paid,round(100*sum(Prepared*DishCount)/sum(DishCount),2) from Orders,Dishes where Orders.OrderId=Dishes.OrderId and UserId = ? group by OrderId order by OrderId limit 10
-                              offset ?`, userId, (page-1)*10)
+	rows, err := DB.Query(`
+				select Orders.OrderId, Price, Paid, round(100*sum(Prepared*DishCount)/sum(DishCount), 2)
+					from
+					Orders, Dishes
+					where
+					Orders.OrderId = Dishes.OrderId
+					and
+					UserId = ? group
+					by
+					OrderId
+					order
+					by
+					OrderId
+					limit
+					10
+					offset ?`, userId, (page-1)*10)
 	if utils.LogIfErr(err, "DB error") {
 		return nil
 	}
@@ -247,14 +337,21 @@ func GetUserOrders(userId int, page int) []OrderDishes {
 		if utils.LogIfErr(err, "DB error") {
 			return nil
 		}
-		dishRows, err := DB.Query(`select DishCount,SplInstructions,Prepared,ItemName from Items,Dishes where Items.ItemId = Dishes.ItemId and OrderId = ?`, order.OrderId)
+		dishRows, err := DB.Query(`
+					select DishId,DishCount, SplInstructions, Prepared, ItemName
+						from
+						Items, Dishes
+						where
+						Items.ItemId = Dishes.ItemId
+						and
+						OrderId = ?`, order.OrderId)
 		if utils.LogIfErr(err, "DB error") {
 			return nil
 		}
 
 		for dishRows.Next() {
 			var dish DishItem
-			err = dishRows.Scan(&dish.DishCount, &dish.SplInstructions, &dish.Prepared, &dish.ItemName)
+			err = dishRows.Scan(&dish.DishId, &dish.DishCount, &dish.SplInstructions, &dish.Prepared, &dish.ItemName)
 			if utils.LogIfErr(err, "DB error") {
 				return nil
 			}
@@ -267,21 +364,30 @@ func GetUserOrders(userId int, page int) []OrderDishes {
 
 func GetUserOrder(orderId int) (OrderDishes, error) {
 	var order OrderDishes
-	row := DB.QueryRow(`select
-	OrderId,
-	UserId,
-	Price,
-	Paid 
-from
-	Orders
-where Orders.OrderId = ?`, orderId)
+	row := DB.QueryRow(`
+						select
+							OrderId,
+								UserId,
+								Price,
+								Paid
+							from
+							Orders
+							where
+							Orders.OrderId = ?`, orderId)
 
 	err := row.Scan(&order.OrderId, &order.UserId, &order.Price, &order.Paid)
 	if utils.LogIfErr(err, "DB error") {
 		return OrderDishes{}, err
 	}
-	dishRows, err := DB.Query(`select DishCount,SplInstructions,Prepared,ItemName,Price,(Price*DishCount) from Items,Dishes where Items.ItemId = Dishes.ItemId and OrderId = ?`, order.OrderId)
-	if utils.LogIfErr(err, "DB error") {
+	dishRows, err := DB.Query(`
+							select DishCount, SplInstructions, Prepared, ItemName, Price, (Price * DishCount)
+								from
+								Items, Dishes
+								where
+								Items.ItemId = Dishes.ItemId
+								and
+								OrderId = ?`, order.OrderId)
+	if err != nil {
 		return OrderDishes{}, err
 	}
 	defer dishRows.Close()

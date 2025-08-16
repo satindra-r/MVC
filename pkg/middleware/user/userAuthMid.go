@@ -8,7 +8,6 @@ import (
 )
 
 func AuthVerifyUser(w http.ResponseWriter, r *http.Request) *http.Request {
-
 	var cookies = r.Cookies()
 
 	var JWT = ""

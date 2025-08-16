@@ -4,7 +4,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Mono:wght@100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@100..900&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="/static/css/styles.css">
     <script src="/static/js/items.js" defer></script>
@@ -12,13 +12,17 @@
         Items
     </title>
 </head>
-<body class="bg-slate-900 h-screen font-mono">
+<body class="bg-slate-900 h-screen fo">
 <input type="hidden" id="filters" data-filters="{{.Filters}}">
 <div class="flex flex-col items-center justify-center h-screen text-white">
-    <div class="flex flex-row bg-slate-800 w-full h-[10%] text-teal-500 items-center justify-end gap-16 px-32">
-        <a href="/items">Items</a>
-        <a href="/orders">Orders</a>
-        <a id="logout" href="/login">Log Out</a>
+
+    <div class="flex flex-row bg-slate-800 w-full h-[10%] text-white items-center justify-between gap-16 px-32">
+        You are Logged in as: User
+        <div class="flex flex-row bg-slate-800 w-[50%] h-full text-teal-500 items-center justify-end gap-16">
+            <a href="/items">Items</a>
+            <a href="/orders">Orders</a>
+            <a id="logout" href="/login">Log Out</a>
+        </div>
     </div>
 
     <div class="flex flex-row items-center w-full h-[10%] px-8">
@@ -30,6 +34,11 @@
 
     <div class="flex flex-row w-full h-[70%]">
         <div class="flex flex-col border w-[15%] h-full px-8 py-4">
+            <label for="search" class="flex flex-row items-center w-full h-[5vh] font-bold">
+                Search
+            </label>
+            <input id="search" value="{{.Search}}" placeholder="Search" class="w-full bg-slate-800 ps-2" autocomplete="off">
+            <hr/>
             <div class="flex flex-row items-center w-full h-[5vh] font-bold">
                 Filters
             </div>
@@ -72,7 +81,7 @@
     </div>
 
     <div class="flex justify-end items-center bg-slate-800 w-full h-[10%] px-8">
-        <button id="Order" class="w-[10%] h-1/2 bg-slate-900 border-gray-500 border-4 rounded-full">Order
+        <button id="order" class="w-[10%] h-1/2 bg-slate-900 border-gray-500 border-4 rounded-full">Order
         </button>
     </div>
 </div>

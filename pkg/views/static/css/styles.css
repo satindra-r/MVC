@@ -554,6 +554,10 @@ video {
   display: none;
 }
 
+.inline {
+  display: inline;
+}
+
 .flex {
   display: flex;
 }
@@ -700,6 +704,10 @@ video {
 
 .w-\[50\%\] {
   width: 50%;
+}
+
+.w-\[75\%\] {
+  width: 75%;
 }
 
 .w-\[85\%\] {
@@ -892,8 +900,8 @@ video {
   vertical-align: middle;
 }
 
-.font-mono {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+.font-noto {
+  font-family: "Noto Sans", sans-serif;
 }
 
 .text-2xl {

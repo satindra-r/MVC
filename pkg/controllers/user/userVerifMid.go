@@ -8,6 +8,7 @@ import (
 	"mvc/pkg/utils"
 	"net/http"
 	"regexp"
+	"strconv"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -145,6 +146,46 @@ func VerifyCreateOrder(w http.ResponseWriter, r *http.Request) *http.Request {
 
 	r = r.WithContext(context.WithValue(r.Context(), "DBDishes", DBDishes))
 	r = r.WithContext(context.WithValue(r.Context(), "DBOrder", DBOrder))
+
+	return r
+}
+
+func VerifyCountDish(w http.ResponseWriter, r *http.Request) *http.Request {
+	var dishIdStr string
+	var countStr string
+	var dishId int
+	var count int
+	var hasErr bool
+	var err error
+
+	dishIdStr, hasErr = utils.GetOrReflect(w, r, "dishId")
+	if hasErr {
+		return nil
+	}
+
+	dishId, err = strconv.Atoi(dishIdStr)
+
+	if err != nil {
+		utils.RespondFailure(w, http.StatusBadRequest, "Invalid dishId")
+		return nil
+	}
+
+	countStr, hasErr = utils.GetOrReflect(w, r, "count")
+	if hasErr {
+		return nil
+	}
+
+	count, err = strconv.Atoi(countStr)
+
+	if err != nil {
+		utils.RespondFailure(w, http.StatusBadRequest, "Invalid count")
+		return nil
+	}
+
+	count = max(-1, min(count, 1))
+
+	r = r.WithContext(context.WithValue(r.Context(), "DishId", dishId))
+	r = r.WithContext(context.WithValue(r.Context(), "Count", count))
 
 	return r
 }

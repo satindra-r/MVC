@@ -21,14 +21,14 @@ func UserRenderSignUp(w http.ResponseWriter) {
 	utils.ReflectAndLogErr(w, http.StatusInternalServerError, err, "Connection Error")
 }
 
-func UserRenderItems(w http.ResponseWriter, page int, filters int) {
+func UserRenderItems(w http.ResponseWriter, page int, filters int, search string) {
 	var temp = template.Must(template.ParseFiles("pkg/views/items.gohtml"))
-
 	data := map[string]interface{}{
-		"Items":    models.GetItems(page, filters),
+		"Items":    models.GetItems(page, filters, search),
 		"Sections": models.GetSections(),
 		"Page":     strconv.Itoa(page),
 		"Filters":  strconv.Itoa(filters),
+		"Search":   search,
 	}
 	err := temp.Execute(w, data)
 	utils.ReflectAndLogErr(w, http.StatusInternalServerError, err, "Connection Error")
@@ -37,7 +37,6 @@ func UserRenderItems(w http.ResponseWriter, page int, filters int) {
 
 func UserRenderOrders(w http.ResponseWriter, userId int, page int) {
 	var temp = template.Must(template.ParseFiles("pkg/views/orders.gohtml"))
-
 	data := map[string]interface{}{
 		"Orders": models.GetUserOrders(userId, page),
 		"Page":   strconv.Itoa(page),

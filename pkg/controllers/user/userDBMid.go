@@ -65,3 +65,14 @@ func DBCreateOrder(w http.ResponseWriter, r *http.Request) *http.Request {
 	utils.RespondSuccess(w, http.StatusCreated, "Order Created")
 	return r
 }
+
+func DBSetCountDish(w http.ResponseWriter, r *http.Request) *http.Request {
+	var dishId = r.Context().Value("DishId").(int)
+	var count = r.Context().Value("Count").(int)
+	err := models.EditDishCount(dishId, count)
+	if utils.ReflectAndLogErr(w, http.StatusInternalServerError, err, "Database Error") {
+		return nil
+	}
+	utils.RespondSuccess(w, http.StatusOK, "Dish Count Set")
+	return r
+}

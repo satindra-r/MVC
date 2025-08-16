@@ -8,9 +8,6 @@ import (
 )
 
 func DBGetUserRole(w http.ResponseWriter, r *http.Request) *http.Request {
-	if r.Context().Value("UserId").(int) == -1 {
-
-	}
 	var role, err = models.GetUserRole(r.Context().Value("UserId").(int))
 	if utils.ReflectAndLogErr(w, http.StatusInternalServerError, err, "Database Error") {
 		return nil

@@ -4,7 +4,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Mono:wght@100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@100..900&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="/static/css/styles.css">
     <script src="/static/js/sections.js" defer></script>
@@ -12,26 +12,26 @@
         Admin Sections
     </title>
 </head>
-<body class="bg-slate-900 h-screen font-mono">
+<body class="bg-slate-900 h-screen font-noto">
 <div class="flex flex-col items-center justify-center h-screen text-white">
-    <div class="flex flex-row bg-slate-800 w-full h-[10vh] text-teal-500 items-center justify-end gap-16 px-32">
-        <a href="/items">Items</a>
-        <a href="/sections">Sections</a>
-        <a href="/orders">Orders</a>
-        <a href="/users">Users</a>
-        <a id="logout" href="/login">Log Out</a>
+    <div class="flex flex-row bg-slate-800 w-full h-[10%] text-white items-center justify-between gap-16 px-32">
+        You are Logged in as: Admin
+        <div class="flex flex-row bg-slate-800 w-[50%] h-full text-teal-500 items-center justify-end gap-16">
+            <a href="/items">Items</a>
+            <a href="/sections">Sections</a>
+            <a href="/orders">Orders</a>
+            <a href="/users">Users</a>
+            <a id="logout" href="/login">Log Out</a>
+        </div>
     </div>
     <div class="flex flex-col w-full h-[80vh] overflow-y-scroll">
-        <div class="flex flex-row align-middle justify-between w-full h-[10vh] min-h-[10vh] border-gray-600 border items-center px-8">
-            <div class="flex flex-row items-center justify-start gap-2 w-[30%] h-full">
-                <div class="w-[2vh] h-[2vh] rounded-full"></div>
-                <input id="SectionName" class="w-[25%] bg-slate-800" placeholder="Section Name">
+        <div class="flex flex-row align-middle justify-start w-full h-[10vh] min-h-[10vh] gap-4 border-gray-600 border items-center px-8">
+            <div class="flex flex-row items-center justify-start w-[10%] h-full">
+                <input id="SectionName" class="w-full bg-slate-800" placeholder="Section Name">
             </div>
-            <div class="flex flex-row w-[10%] h-3/4 items-center">
-                <div class="flex flex-col w-[50%] h-full">
-                </div>
-                <button id="button add" class="border rounded-full w-[50%] h-[75%]">
-                    Add
+            <div class="flex flex-row w-[5%] h-3/4 items-center">
+                <button id="button add" class="border rounded-full w-[75%] h-1/2">
+                    +
                 </button>
             </div>
         </div>
@@ -43,7 +43,7 @@
                          style="background-color: hsl({{$section.Colour}},50%,75%)"></div>
                     {{$section.SectionName}}
                 </div>
-                <div class="flex flex-row w-[10%] h-3/4 items-center">
+                <div class="flex flex-row w-[10%] h-3/4 items-center gap-2">
                     <div class="flex flex-col w-[50%] h-full">
                         <button id="button up {{ $i }}" data-SectionId="{{$section.SectionId}}"
                                 class="border rounded-full w-full h-1/2 disabled:bg-gray-800 disabled:text-gray-400">
@@ -55,8 +55,8 @@
                         </button>
                     </div>
                     <button id="button del {{ $i }}" data-SectionId="{{$section.SectionId}}"
-                            class="border rounded-full w-[50%] h-[75%]">
-                        Delete
+                            class="border rounded-full w-[50%] h-1/2">
+                        🗑
                     </button>
                 </div>
             </div>
