@@ -606,6 +606,10 @@ video {
   height: 10vh;
 }
 
+.h-\[25\%\] {
+  height: 25%;
+}
+
 .h-\[2vh\] {
   height: 2vh;
 }
