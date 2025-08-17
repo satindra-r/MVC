@@ -4,6 +4,8 @@ let upButtons = [];
 let downButtons = [];
 let pageCounter = document.getElementById("page");
 const pageNo = new URLSearchParams(window.location.search).get("page");
+let pageup = document.getElementById("button page up");
+let pagedown = document.getElementById("button page down");
 for (let i = 0; i < 10; i++) {
     let pay = document.getElementById("pay " + i);
     if (pay) {
@@ -80,20 +82,25 @@ for (let i = 0; i < downButtons.length; i++) {
     })
 }
 
+pageup.addEventListener("click", function () {
+    document.location.href = "/orders?page=" + (parseInt(pageCounter.value) + 1);
+})
 
-pageCounter.addEventListener("click", function (e) {
-    if (pageCounter.value !== pageNo) {
-        document.location.href = "/orders?page=" + e.target.value;
+pagedown.addEventListener("click", function () {
+    if (parseInt(pageCounter.value) > 1) {
+        document.location.href = "/orders?page=" + (parseInt(pageCounter.value) - 1);
     }
-});
+})
 
-pageCounter.addEventListener("keydown", function (e) {
+pageCounter.addEventListener("keyup", function (e) {
     if (e.key === "Enter") {
-        if (pageCounter.value !== pageNo) {
+        if (e.target.value !== pageNo) {
             document.location.href = "/orders?page=" + e.target.value;
         }
+    } else {
+        e.target.value = Math.max(1, parseInt(e.target.value || "1"));
     }
-});
+})
 
 document.getElementById("logout").addEventListener("click", function (e) {
     localStorage.clear();

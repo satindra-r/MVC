@@ -4,6 +4,8 @@ let adminRadios = [];
 
 let pageCounter = document.getElementById("page");
 const pageNo = new URLSearchParams(window.location.search).get("page");
+let pageup = document.getElementById("button page up");
+let pagedown = document.getElementById("button page down");
 
 for (let i = 0; i < 10; i++) {
 
@@ -72,19 +74,25 @@ for (let i = 0; i < adminRadios.length; i++) {
 
 }
 
-pageCounter.addEventListener("click", function (e) {
-    if (pageCounter.value !== pageNo) {
-        document.location.href = "/users?page=" + e.target.value;
-    }
-});
+pageup.addEventListener("click", function () {
+    document.location.href = "/users?page=" + (parseInt(pageCounter.value) + 1);
+})
 
-pageCounter.addEventListener("keydown", function (e) {
+pagedown.addEventListener("click", function () {
+    if (parseInt(pageCounter.value) > 1) {
+        document.location.href = "/users?page=" + (parseInt(pageCounter.value) - 1);
+    }
+})
+
+pageCounter.addEventListener("keyup", function (e) {
     if (e.key === "Enter") {
-        if (pageCounter.value !== pageNo) {
+        if (e.target.value !== pageNo) {
             document.location.href = "/users?page=" + e.target.value;
         }
+    } else {
+        e.target.value = Math.max(1, parseInt(e.target.value || "1"));
     }
-});
+})
 
 document.getElementById("logout").addEventListener("click", function () {
     localStorage.clear();

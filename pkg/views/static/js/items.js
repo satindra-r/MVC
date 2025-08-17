@@ -1,8 +1,12 @@
 let counters = [];
 let checkboxes = [];
 let instructions = [];
+let upButtons = [];
+let downButtons = [];
 let pageCounter = document.getElementById("page");
 const pageNo = new URLSearchParams(window.location.search).get("page");
+let pageup = document.getElementById("button page up");
+let pagedown = document.getElementById("button page down");
 let savedItems = JSON.parse(localStorage.getItem("Items")) || Object();
 let savedFilters = document.getElementById("filters")["dataset"]["filters"];
 let searchBox = document.getElementById("search");
@@ -17,6 +21,14 @@ for (let i = 0; i < 10; i++) {
             counter.value = 0;
         }
         counters.push(counter);
+    }
+    let upButton = document.getElementById("button up " + i);
+    if (upButton) {
+        upButtons.push(upButton);
+    }
+    let downButton = document.getElementById("button down " + i);
+    if (downButton) {
+        downButtons.push(downButton);
     }
     let checkbox = document.getElementById("checkbox " + i);
     if (checkbox) {
@@ -57,6 +69,40 @@ for (let i = 0; i < counters.length; i++) {
     })
 }
 
+for (let i = 0; i < upButtons.length; i++) {
+    upButtons[i].addEventListener("click", function (e) {
+        let counterValue = Math.max(0, parseInt(counters[i].value || "0") + 1);
+        counters[i].value = counterValue;
+        let items = JSON.parse(localStorage.getItem("Items")) || Object();
+        if (!items[e.target["dataset"]["itemid"]]) {
+            items[e.target["dataset"]["itemid"]] = Object();
+        }
+        if (counterValue) {
+            items[e.target["dataset"]["itemid"]]["count"] = counterValue;
+        } else {
+            delete items[e.target["dataset"]["itemid"]];
+        }
+        localStorage.setItem("Items", JSON.stringify(items));
+    })
+}
+
+for (let i = 0; i < downButtons.length; i++) {
+    downButtons[i].addEventListener("click", function (e) {
+        let counterValue = Math.max(0, parseInt(counters[i].value || "0") - 1);
+        counters[i].value = counterValue;
+        let items = JSON.parse(localStorage.getItem("Items")) || Object();
+        if (!items[e.target["dataset"]["itemid"]]) {
+            items[e.target["dataset"]["itemid"]] = Object();
+        }
+        if (counterValue) {
+            items[e.target["dataset"]["itemid"]]["count"] = counterValue;
+        } else {
+            delete items[e.target["dataset"]["itemid"]];
+        }
+        localStorage.setItem("Items", JSON.stringify(items));
+    })
+}
+
 for (let i = 0; i < instructions.length; i++) {
     instructions[i].addEventListener("input", function (e) {
         let instructionValue = e.target.value;
@@ -84,17 +130,23 @@ for (let i = 0; i < checkboxes.length; i++) {
     })
 }
 
-pageCounter.addEventListener("click", function (e) {
-    if (pageCounter.value !== pageNo) {
-        document.location.href = "/items?page=" + e.target.value + "&filters=" + savedFilters + "&search=" + searchQuery;
+pageup.addEventListener("click", function () {
+    document.location.href = "/items?page=" + (parseInt(pageCounter.value) + 1) + "&filters=" + savedFilters + "&search=" + searchQuery;
+})
+
+pagedown.addEventListener("click", function () {
+    if (parseInt(pageCounter.value) > 1) {
+        document.location.href = "/items?page=" + (parseInt(pageCounter.value) - 1) + "&filters=" + savedFilters + "&search=" + searchQuery;
     }
 })
 
-pageCounter.addEventListener("keydown", function (e) {
+pageCounter.addEventListener("keyup", function (e) {
     if (e.key === "Enter") {
-        if (pageCounter.value !== pageNo) {
+        if (e.target.value !== pageNo) {
             document.location.href = "/items?page=" + e.target.value + "&filters=" + savedFilters + "&search=" + searchQuery;
         }
+    } else {
+        e.target.value = Math.max(1, parseInt(e.target.value || "1"));
     }
 })
 

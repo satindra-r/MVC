@@ -610,6 +610,10 @@ video {
   height: 2vh;
 }
 
+.h-\[50\%\] {
+  height: 50%;
+}
+
 .h-\[5vh\] {
   height: 5vh;
 }
@@ -760,6 +764,10 @@ video {
 
 .justify-around {
   justify-content: space-around;
+}
+
+.gap-1 {
+  gap: 0.25rem;
 }
 
 .gap-16 {

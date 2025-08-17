@@ -27,14 +27,28 @@
     </div>
 
     <div class="flex flex-row items-center w-full h-[10%] px-8">
-        <div class="flex flex-row w-full">
+        <div class="flex flex-row items-center w-[50%] gap-2">
             <label for="page">Page:</label>
-            <input id="page" type="number" value="{{.Page}}" min="1" class="w-[5%] bg-slate-800 ps-2">
+            <input id="page" value="{{.Page}}" min="1" class="w-[5%] h-[50%] bg-slate-800 ps-2">
+            <div class="flex flex-col w-[5%] h-[75%] gap-1">
+                <button id="button page up" class="border rounded-full w-full h-1/2">
+                    +
+                </button>
+                <button id="button page down" class="border rounded-full w-full h-1/2">
+                    -
+                </button>
+            </div>
         </div>
     </div>
 
     <div class="flex flex-row w-full h-[70%]">
         <div class="flex flex-col border w-[15%] h-full px-8 py-4">
+            <label for="search" class="flex flex-row items-center w-full h-[5vh] font-bold">
+                Search
+            </label>
+            <input id="search" value="{{.Search}}" placeholder="Search" class="w-full bg-slate-800 ps-2"
+                   autocomplete="off">
+            <hr/>
             <div class="flex flex-row items-center w-full h-[5vh] font-bold">
                 Filters
             </div>

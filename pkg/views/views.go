@@ -33,13 +33,16 @@ func RenderItems(w http.ResponseWriter, r *http.Request) *http.Request {
 			filters = max(0, filters)
 
 			var search = r.URL.Query().Get("search")
-			if page == 1 && filters == 0 && Cache.Len() > 0 {
+			if page == 1 && filters == 0 && search == "" && Cache.Len() > 0 {
 				_, err := w.Write(Cache.Bytes())
 				if utils.ReflectAndLogErr(w, http.StatusInternalServerError, err, "Connection Error") {
 					return nil
 				}
-			} else {
+			} else if page == 1 && filters == 0 && search == "" {
 				renderer.AdminRenderItems(&Cache, w, page, filters, search)
+
+			} else {
+				renderer.AdminRenderItems(nil, w, page, filters, search)
 			}
 			return r
 		}

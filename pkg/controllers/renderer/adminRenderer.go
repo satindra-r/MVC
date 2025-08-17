@@ -18,12 +18,15 @@ func AdminRenderItems(cache *bytes.Buffer, w http.ResponseWriter, page int, filt
 		"Sections": models.GetSections(),
 		"Page":     strconv.Itoa(page),
 		"Filters":  strconv.Itoa(filters),
+		"Search":   search,
 	}
 	err := renderTemp.Execute(w, data)
 	if utils.ReflectAndLogErr(w, http.StatusInternalServerError, err, "Connection Error") {
 		return
 	}
-	_ = renderTemp.Execute(cache, data)
+	if cache != nil {
+		_ = renderTemp.Execute(cache, data)
+	}
 
 }
 func AdminRenderOrders(w http.ResponseWriter, page int) {

@@ -26,9 +26,17 @@
     </div>
 
     <div class="flex flex-row items-center w-full h-[10%] px-8">
-        <div class="flex flex-row w-full">
+        <div class="flex flex-row items-center w-[50%] gap-2">
             <label for="page">Page:</label>
-            <input id="page" type="number" value="{{.Page}}" min="1" class="w-[5%] bg-slate-800 ps-2">
+            <input id="page" value="{{.Page}}" min="1" class="w-[5%] h-[50%] bg-slate-800 ps-2">
+            <div class="flex flex-col w-[5%] h-[75%] gap-1">
+                <button id="button page up" class="border rounded-full w-full h-1/2">
+                    +
+                </button>
+                <button id="button page down" class="border rounded-full w-full h-1/2">
+                    -
+                </button>
+            </div>
         </div>
     </div>
 
@@ -70,10 +78,20 @@
                               placeholder="Spl Instructions" class="bg-slate-800 ps-2 resize-none h-full"></textarea>
                     </div>
 
-                    <div>
+                    <div class="flex flex-row items-center justify-between gap-2 w-[10%]">
                         <label for="counter {{$i}}">Count:</label>
-                        <input id="counter {{$i}}" data-ItemId="{{$item.ItemId}}" type="number" value="0"
-                               min="0" max="9" class="bg-slate-800 ps-2">
+                        <input id="counter {{$i}}" data-ItemId="{{$item.ItemId}}" value="0"
+                               class="bg-slate-800 ps-2 w-[50%]">
+                        <div class="flex flex-col w-[50%] h-[75%] gap-1">
+                            <button id="button up {{ $i }}" data-ItemId="{{$item.ItemId}}"
+                                    class="border rounded-full w-full h-1/2">
+                                +
+                            </button>
+                            <button id="button down {{ $i }}" data-DishId="{{$item.ItemId}}"
+                                    class="border rounded-full w-full h-1/2">
+                                -
+                            </button>
+                        </div>
                     </div>
                 </div>
             {{end}}

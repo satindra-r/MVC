@@ -8,8 +8,12 @@ let prices = [];
 
 let pageCounter = document.getElementById("page");
 const pageNo = new URLSearchParams(window.location.search).get("page");
+let pageup = document.getElementById("button page up");
+let pagedown = document.getElementById("button page down");
 let savedFilters = document.getElementById("filters")["dataset"]["filters"];
 let error = document.getElementById("Error");
+let searchBox = document.getElementById("search");
+const searchQuery = searchBox.value;
 
 for (let i = 0; i < 10; i++) {
 
@@ -97,21 +101,36 @@ document.getElementById("edit -1").addEventListener("click", async function (e) 
 for (let i = 0; i < checkboxes.length; i++) {
     checkboxes[i].addEventListener("click", function (e) {
         savedFilters ^= (1 << (e.target["dataset"]["sectionid"] - 1));
-        document.location.href = "/items?page=" + pageCounter.value + "&filters=" + savedFilters;
+        document.location.href = "/items?page=" + pageCounter.value + "&filters=" + savedFilters + "&search=" + searchQuery;
     })
 }
 
-pageCounter.addEventListener("click", function (e) {
-    if (pageCounter.value !== pageNo) {
-        document.location.href = "/items?page=" + e.target.value + "&filters=" + savedFilters;
+
+searchBox.addEventListener("keydown", function (e) {
+    if (e.key === "Enter") {
+        if (searchBox.value !== searchQuery) {
+            document.location.href = "/items?page=" + pageCounter.value + "&filters=" + savedFilters + "&search=" + e.target.value;
+        }
     }
 })
 
-pageCounter.addEventListener("keydown", function (e) {
+pageup.addEventListener("click", function () {
+    document.location.href = "/items?page=" + (parseInt(pageCounter.value) + 1) + "&filters=" + savedFilters + "&search=" + searchQuery;
+})
+
+pagedown.addEventListener("click", function () {
+    if (parseInt(pageCounter.value) > 1) {
+        document.location.href = "/items?page=" + (parseInt(pageCounter.value) - 1) + "&filters=" + savedFilters + "&search=" + searchQuery;
+    }
+})
+
+pageCounter.addEventListener("keyup", function (e) {
     if (e.key === "Enter") {
-        if (pageCounter.value !== pageNo) {
-            document.location.href = "/items?page=" + e.target.value + "&filters=" + savedFilters;
+        if (e.target.value !== pageNo) {
+            document.location.href = "/items?page=" + e.target.value + "&filters=" + savedFilters + "&search=" + searchQuery;
         }
+    } else {
+        e.target.value = Math.max(1, parseInt(e.target.value || "1"));
     }
 })
 
