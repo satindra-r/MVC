@@ -44,6 +44,8 @@ func SetupRouter() *mux.Router {
 	utils.SetRoute(router, "POST", "/api/item", admin.VerifyCreateItem, userMid.AuthVerifyUser, chefMid.DBGetUserRole, adminMid.AuthVerifyAdmin, admin.DBCreateItem)
 	utils.SetRoute(router, "PUT", "/api/item", admin.VerifyEditItem, userMid.AuthVerifyUser, chefMid.DBGetUserRole, adminMid.AuthVerifyAdmin, admin.DBEditItem)
 
+	router.NotFoundHandler = http.HandlerFunc(views.NotFound)
+
 	return router
 }
 

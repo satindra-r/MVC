@@ -175,3 +175,7 @@ func RenderHomeScreen(w http.ResponseWriter, r *http.Request) *http.Request {
 		}
 	}
 }
+
+func NotFound(w http.ResponseWriter, r *http.Request) {
+	http.Redirect(w, r, "/static/404.html", http.StatusFound)
+}

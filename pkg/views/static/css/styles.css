@@ -872,6 +872,10 @@ video {
   background-color: rgb(2 6 23 / var(--tw-bg-opacity));
 }
 
+.p-16 {
+  padding: 4rem;
+}
+
 .p-2 {
   padding: 0.5rem;
 }
@@ -919,6 +923,20 @@ video {
 .text-2xl {
   font-size: 1.5rem;
   line-height: 2rem;
+}
+
+.text-3xl {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+
+.text-5xl {
+  font-size: 3rem;
+  line-height: 1;
+}
+
+.font-\[900\] {
+  font-weight: 900;
 }
 
 .font-bold {
