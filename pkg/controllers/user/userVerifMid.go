@@ -30,8 +30,6 @@ func VerifyCreateUser(w http.ResponseWriter, r *http.Request) *http.Request {
 	var err error
 	var user = models.User{}
 
-	user.UserId = models.GetNextUserID()
-
 	user.UserName, hasErr = utils.GetOrReflect(w, r, "Username")
 	if hasErr {
 		return nil
@@ -118,10 +116,8 @@ func VerifyCreateOrder(w http.ResponseWriter, r *http.Request) *http.Request {
 	}
 	var DBDishes []models.Dish
 	var DBOrder = models.Order{}
-	DBOrder.OrderId = models.GetNextOrderID()
 	DBOrder.Price = 0
 
-	var DishId = models.GetNextDishID()
 	var prices []float64
 	prices, err = models.GetItemPrices()
 
@@ -133,14 +129,12 @@ func VerifyCreateOrder(w http.ResponseWriter, r *http.Request) *http.Request {
 
 		if item.Count > 0 {
 			var dish = models.Dish{}
-			dish.DishId = DishId
 			dish.OrderId = DBOrder.OrderId
 			dish.ItemId = item.ItemId
 			dish.DishCount = item.Count
 			dish.SplInstructions = item.SplInstructions
 			DBDishes = append(DBDishes, dish)
 			DBOrder.Price += prices[item.ItemId] * (float64)(item.Count)
-			DishId++
 		}
 	}
 

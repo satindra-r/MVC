@@ -1,1 +1,1 @@
-TRUNCATE Items;
+TRUNCATE TABLE Items;

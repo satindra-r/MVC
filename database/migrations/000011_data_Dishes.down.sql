@@ -1,1 +1,1 @@
-TRUNCATE Dishes;
+TRUNCATE TABLE Dishes;

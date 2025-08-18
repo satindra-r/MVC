@@ -162,8 +162,6 @@ func VerifyCreateItem(w http.ResponseWriter, r *http.Request) *http.Request {
 	var hasErr bool
 	var err error
 
-	item.ItemId = models.GetNextItemID()
-
 	item.ItemName, hasErr = utils.GetOrReflect(w, r, "itemName")
 	if hasErr {
 		return nil

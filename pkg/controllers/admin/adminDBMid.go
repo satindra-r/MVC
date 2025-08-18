@@ -20,11 +20,11 @@ func DBSetPaidOrder(w http.ResponseWriter, r *http.Request) *http.Request {
 
 func DBCreateSection(w http.ResponseWriter, r *http.Request) *http.Request {
 	views.Cache.Truncate(0)
-	var sectionName = r.Context().Value("SectionName").(string)
-	var sectionId = models.GetNextSectionId()
-	var sectionOrder = models.GetNextSectionOrder()
+	var section models.Section
+	section.SectionName = r.Context().Value("SectionName").(string)
+	section.SectionOrder = models.GetNextSectionOrder()
 	var err error
-	err = models.CreateSection(sectionId, sectionOrder, sectionName)
+	err = models.CreateSection(section)
 	if utils.ReflectAndLogErr(w, http.StatusInternalServerError, err, "Database error") {
 		return nil
 	}

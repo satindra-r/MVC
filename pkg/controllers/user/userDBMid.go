@@ -50,12 +50,13 @@ func DBCreateOrder(w http.ResponseWriter, r *http.Request) *http.Request {
 	var DBOrder = r.Context().Value("DBOrder").(models.Order)
 
 	DBOrder.UserId = r.Context().Value("UserId").(int)
-	var err = models.CreateOrder(DBOrder)
+	var orderId, err = models.CreateOrder(DBOrder)
 	if utils.ReflectAndLogErr(w, http.StatusInternalServerError, err, "Database Error") {
 		return nil
 	}
 
 	for _, dish := range DBDishes {
+		dish.OrderId = orderId
 		var err = models.CreateDish(dish)
 		if utils.ReflectAndLogErr(w, http.StatusInternalServerError, err, "Database Error") {
 			return nil

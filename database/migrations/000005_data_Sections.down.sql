@@ -1,1 +1,1 @@
-TRUNCATE Sections;
+TRUNCATE TABLE Sections;

@@ -67,24 +67,10 @@ type DishItem struct {
 	Price           string `json:"Price"`
 }
 
-func GetNextUserID() int {
-	row := DB.QueryRow(`select max(UserId) from Users`)
-
-	var userId int
-	var err error
-
-	err = row.Scan(&userId)
-
-	if err != nil {
-		return 1
-	}
-
-	return userId + 1
-
-}
-
 func CreateUser(user User) error {
-	_, err := DB.Exec(`insert into Users(UserId, UserName, Role, PhoneNo, Address, Hash) value (?, ?, ?, ?, ?, ?)`, user.UserId, user.UserName, user.Role, user.PhoneNo, user.Address, user.Hash)
+	_, err := DB.Exec(
+		`INSERT INTO Users(UserName, Role, PhoneNo, Address, Hash) VALUES (?, ?, ?, ?, ?)`, user.UserName, user.Role, user.PhoneNo, user.Address, user.Hash,
+	)
 	return err
 }
 
@@ -98,30 +84,6 @@ func GetUserCredentials(userName string) (string, int) {
 		return "", -1
 	}
 	return hash, userId
-}
-
-func GetNextDishID() int {
-	row := DB.QueryRow(`select max(DishId) from Dishes`)
-
-	var dishId int
-	var err error
-	err = row.Scan(&dishId)
-	if err != nil {
-		return 1
-	}
-	return dishId + 1
-}
-
-func GetNextOrderID() int {
-	row := DB.QueryRow(`select max(OrderId) from Orders`)
-
-	var orderId int
-	var err error
-	err = row.Scan(&orderId)
-	if err != nil {
-		return 1
-	}
-	return orderId + 1
 }
 
 func GetItemPrices() ([]float64, error) {
@@ -148,7 +110,7 @@ func GetItemPrices() ([]float64, error) {
 }
 
 func CreateDish(dish Dish) error {
-	_, err := DB.Exec(`insert into Dishes(DishId, ItemId, OrderId, DishCount, SplInstructions, Prepared) value (?, ?, ?, ?, ?, 0)`, dish.DishId, dish.ItemId, dish.OrderId, dish.DishCount, dish.SplInstructions)
+	_, err := DB.Exec(`insert into Dishes(ItemId, OrderId, DishCount, SplInstructions, Prepared) value (?, ?, ?, ?, 0)`, dish.ItemId, dish.OrderId, dish.DishCount, dish.SplInstructions)
 	return err
 }
 
@@ -190,13 +152,21 @@ func EditDishCount(dishId int, count int) error {
 	return nil
 }
 
-func CreateOrder(order Order) error {
-	_, err := DB.Exec(`
-	insert
-	into
-	Orders(OrderId, UserId, Price, Paid)
-	value(?, ?, ?, 0)`, order.OrderId, order.UserId, order.Price)
-	return err
+func CreateOrder(order Order) (int, error) {
+	res, err := DB.Exec(
+		`INSERT INTO Orders(UserId, Price, Paid) VALUES (?, ?, 0)`,
+		order.UserId, order.Price,
+	)
+	if err != nil {
+		return -1, err
+	}
+	var orderId int64
+	orderId, err = res.LastInsertId()
+	if err != nil {
+		return -1, err
+	}
+
+	return (int)(orderId), nil
 }
 
 func GetItems(page int, filters int, search string) []SectionedItems {
@@ -222,28 +192,6 @@ func GetItems(page int, filters int, search string) []SectionedItems {
 		questionMarks += ")"
 
 		rows, err = DB.Query(`
-	select ItemId, ItemName, Items.SectionId, Price, SectionName
-		from
-		Items, Sections
-		where
-		Items.SectionId = Sections.SectionId
-		and
-		ItemName
-		regexp ? and
-		Items.SectionId
-		in
-		`+questionMarks+`
-		order
-		by
-		SectionId, ItemId
-		limit
-		10
-		offset ?`, append([]any{search}, append(filtersList, (page-1)*10)...)...)
-		if utils.LogIfErr(err, "DB error") {
-			return nil
-		}
-	} else {
-		rows, err = DB.Query(`
 		select ItemId, ItemName, Items.SectionId, Price, SectionName
 			from
 			Items, Sections
@@ -251,12 +199,34 @@ func GetItems(page int, filters int, search string) []SectionedItems {
 			Items.SectionId = Sections.SectionId
 			and
 			ItemName
-			regexp ? order
+			regexp ? and
+			Items.SectionId
+			in
+			`+questionMarks+`
+			order
 			by
 			SectionId, ItemId
 			limit
 			10
-			offset ?`, search, (page-1)*10)
+			offset ?`, append([]any{search}, append(filtersList, (page-1)*10)...)...)
+		if utils.LogIfErr(err, "DB error") {
+			return nil
+		}
+	} else {
+		rows, err = DB.Query(`
+			select ItemId, ItemName, Items.SectionId, Price, SectionName
+				from
+				Items, Sections
+				where
+				Items.SectionId = Sections.SectionId
+				and
+				ItemName
+				regexp ? order
+				by
+				SectionId, ItemId
+				limit
+				10
+				offset ?`, search, (page-1)*10)
 		if utils.LogIfErr(err, "DB error") {
 			return nil
 		}
@@ -278,7 +248,6 @@ func GetItems(page int, filters int, search string) []SectionedItems {
 	}
 	return items
 }
-
 func GetSections() []Section {
 	rows, err := DB.Query(`
 			select SectionId, SectionName, SectionOrder

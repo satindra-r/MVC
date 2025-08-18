@@ -1,1 +1,1 @@
-TRUNCATE Orders;
+TRUNCATE TABLE Orders;

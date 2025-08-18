@@ -19,20 +19,6 @@ func SetPaidOrder(orderId int, paid int) error {
 	return err
 }
 
-func GetNextSectionId() int {
-	row := DB.QueryRow(`select max(SectionId) from Sections`)
-	var sectionId int
-	var err error
-
-	err = row.Scan(&sectionId)
-
-	if err != nil {
-		return 1
-	}
-
-	return sectionId + 1
-}
-
 func GetNextSectionOrder() int {
 	row := DB.QueryRow(`select max(SectionOrder) from Sections`)
 	var sectionOrder int
@@ -47,8 +33,8 @@ func GetNextSectionOrder() int {
 	return sectionOrder + 1
 }
 
-func CreateSection(sectionId int, sectionOrder int, sectionName string) error {
-	_, err := DB.Exec(`insert into Sections(SectionId,SectionOrder,SectionName) value (?, ?, ?)`, sectionId, sectionOrder, sectionName)
+func CreateSection(section Section) error {
+	_, err := DB.Exec(`insert into Sections(SectionOrder,SectionName) value (?, ?)`, section.SectionOrder, section.SectionName)
 	return err
 }
 
@@ -139,24 +125,8 @@ func SetUserRole(userId int, role string) error {
 
 }
 
-func GetNextItemID() int {
-	row := DB.QueryRow(`select max(ItemId) from Items`)
-
-	var itemId int
-	var err error
-
-	err = row.Scan(&itemId)
-
-	if err != nil {
-		return 1
-	}
-
-	return itemId + 1
-
-}
-
 func CreateItem(item Item) error {
-	_, err := DB.Exec(`insert into Items (ItemId, ItemName, SectionId, Price) values (?, ?, ?, ?)`, item.ItemId, item.ItemName, item.SectionId, item.Price)
+	_, err := DB.Exec(`insert into Items (ItemName, SectionId, Price) values (?, ?, ?)`, item.ItemName, item.SectionId, item.Price)
 	return err
 }
 
