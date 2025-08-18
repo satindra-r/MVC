@@ -124,6 +124,7 @@ func EditDishCount(dishId int, count int) error {
 	var dishCount int
 	var orderId int
 	var itemPrice float64
+
 	err = row.Scan(&dishCount, &orderId, &itemPrice)
 	if err != nil {
 		return err
@@ -131,20 +132,29 @@ func EditDishCount(dishId int, count int) error {
 	if dishCount+count <= 0 {
 		return fmt.Errorf("count is out of range")
 	}
+
+	row = tx.QueryRow(`select Price, Paid from Orders where OrderId = ?`, orderId)
+	var orderPrice float64
+	var orderPaid int
+	err = row.Scan(&orderPrice, &orderPaid)
+	if err != nil {
+		return err
+	}
+
+	if orderPaid == 1 {
+		return fmt.Errorf("order is already paid")
+	}
+
 	_, err = tx.Exec(`update Dishes set DishCount = ? where DishId = ?`, dishCount+count, dishId)
 	if err != nil {
 		return err
 	}
-	row = tx.QueryRow(`select Price from Orders where OrderId = ?`, orderId)
-	var orderPrice float64
-	err = row.Scan(&orderPrice)
-	if err != nil {
-		return err
-	}
+
 	_, err = tx.Exec(`update Orders set Price = ? where OrderId = ?`, orderPrice+itemPrice*(float64)(count), orderId)
 	if err != nil {
 		return err
 	}
+
 	err = tx.Commit()
 	if err != nil {
 		return err
