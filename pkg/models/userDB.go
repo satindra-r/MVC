@@ -403,3 +403,13 @@ func GetUserOrder(orderId int) (OrderDishes, error) {
 
 	return order, nil
 }
+
+func GetUsername(userId int) string {
+	row := DB.QueryRow(`select UserName from Users where UserId = ?`, userId)
+	var username string
+	err := row.Scan(&username)
+	if utils.LogIfErr(err, "DB error") {
+		return ""
+	}
+	return username
+}

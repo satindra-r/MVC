@@ -50,6 +50,7 @@ func UserRenderBill(w http.ResponseWriter, userId int, orderId int) {
 	var temp = template.Must(template.ParseFiles("pkg/views/bill.gohtml"))
 
 	var order, err = models.GetUserOrder(orderId)
+	var username = models.GetUsername(userId)
 	if err != nil {
 		utils.RespondFailure(w, http.StatusBadRequest, "Order Does Not Exist")
 		return
@@ -61,7 +62,8 @@ func UserRenderBill(w http.ResponseWriter, userId int, orderId int) {
 	}
 
 	data := map[string]interface{}{
-		"Order": order,
+		"Order":    order,
+		"Username": username,
 	}
 	err = temp.Execute(w, data)
 	utils.ReflectAndLogErr(w, http.StatusInternalServerError, err, "Connection Error")
