@@ -12,29 +12,29 @@
         Items
     </title>
 </head>
-<body class="bg-slate-900 h-screen font-noto">
+<body class="bg-[--colour-900] h-screen font-noto">
 <input type="hidden" id="filters" data-filters="{{.Filters}}">
-<div class="flex flex-col items-center justify-around h-screen text-white">
-    <div class="flex flex-row bg-slate-800 w-full h-[10%] text-white items-center justify-between gap-16 px-32">
+<div class="flex flex-col items-center justify-around h-screen text-[--colour-font]">
+    <div class="flex flex-row bg-[--colour-800] w-full h-[10%] text-[--colour-font] items-center justify-between gap-16 px-32">
         You are Logged in as: Admin
-        <div class="flex flex-row bg-slate-800 w-[50%] h-full text-teal-500 items-center justify-end gap-16">
-            <a href="/items" class="text-center border rounded-full w-[15%] h-[25%]">Items</a>
-            <a href="/sections" class="text-center border rounded-full w-[15%] h-[25%]">Sections</a>
-            <a href="/orders" class="text-center border rounded-full w-[15%] h-[25%]">Orders</a>
-            <a href="/users" class="text-center border rounded-full w-[15%] h-[25%]">Users</a>
-            <a id="logout" href="/login" class="text-center border rounded-full w-[15%] h-[25%]">Log Out</a>
+        <div class="flex flex-row bg-[--colour-800] w-[50%] h-full text-[--colour-hyper] items-center justify-end gap-16">
+            <a href="/items" class="text-center border border-[--colour-border] rounded-full w-[15%] h-[25%]">Items</a>
+            <a href="/sections" class="text-center border border-[--colour-border] rounded-full w-[15%] h-[25%]">Sections</a>
+            <a href="/orders" class="text-center border border-[--colour-border] rounded-full w-[15%] h-[25%]">Orders</a>
+            <a href="/users" class="text-center border border-[--colour-border] rounded-full w-[15%] h-[25%]">Users</a>
+            <a id="logout" href="/login" class="text-center border border-[--colour-border] rounded-full w-[15%] h-[25%]">Log Out</a>
         </div>
     </div>
 
     <div class="flex flex-row items-center w-full h-[10%] px-8">
         <div class="flex flex-row items-center w-[50%] gap-2">
             <label for="page">Page:</label>
-            <input id="page" value="{{.Page}}" min="1" class="w-[5%] h-[50%] bg-slate-800 ps-2">
+            <input id="page" value="{{.Page}}" min="1" class="w-[5%] h-[50%] bg-[--colour-800] ps-2">
             <div class="flex flex-col w-[5%] h-[75%] gap-1">
-                <button id="button page up" class="border rounded-full w-full h-1/2">
+                <button id="button page up" class="border border-[--colour-border] rounded-full w-full h-1/2">
                     +
                 </button>
-                <button id="button page down" class="border rounded-full w-full h-1/2">
+                <button id="button page down" class="border border-[--colour-border] rounded-full w-full h-1/2">
                     -
                 </button>
             </div>
@@ -42,11 +42,11 @@
     </div>
 
     <div class="flex flex-row w-full h-[70%]">
-        <div class="flex flex-col border w-[15%] h-full px-8 py-4">
+        <div class="flex flex-col border border-[--colour-border] w-[15%] h-full px-8 py-4">
             <label for="search" class="flex flex-row items-center w-full h-[5vh] font-bold">
                 Search
             </label>
-            <input id="search" value="{{.Search}}" placeholder="Search" class="w-full bg-slate-800 ps-2"
+            <input id="search" value="{{.Search}}" placeholder="Search" class="w-full bg-[--colour-800] ps-2"
                    autocomplete="off">
             <hr/>
             <div class="flex flex-row items-center w-full h-[5vh] font-bold">
@@ -64,11 +64,11 @@
         </div>
         <div class="flex flex-col w-[85%] h-full">
 
-            <div class="flex flex-row justify-between w-full h-[10%] border-gray-600 border items-center px-8">
-                <input id="itemName -1" class="w-[10%] bg-slate-800" placeholder="Item Name">
+            <div class="flex flex-row justify-between w-full h-[10%] border border-[--colour-border]-gray-600 border border-[--colour-border] items-center px-8">
+                <input id="itemName -1" class="w-[10%] bg-[--colour-800]" placeholder="Item Name">
 
                 <div class="flex flex-row items-center justify-start gap-2 w-[10%] h-full">
-                    <select id="sectionId -1" class="w-full bg-slate-800">
+                    <select id="sectionId -1" class="w-full bg-[--colour-800]">
                         {{range $j,$section := .Sections}}
                             <option value="{{$section.SectionId}}">{{$section.SectionName}}</option>
                         {{end}}
@@ -76,22 +76,22 @@
                 </div>
 
                 <div class="flex flex-row justify-around text-right w-[5%]">
-                    ₹<input id="price -1" class="text-right w-full bg-slate-800" placeholder="Price">
+                    ₹<input id="price -1" class="text-right w-full bg-[--colour-800]" placeholder="Price">
                 </div>
                 <div class="w-[5%] h-[75%] text-center">
-                    <button id="edit -1" class="w-full h-full border-gray-500 border-2 rounded-full">
+                    <button id="edit -1" class="w-full h-full border border-[--colour-border]-gray-500 border border-[--colour-border]-2 rounded-full">
                         +
                     </button>
                 </div>
             </div>
 
             {{range $i, $item := .Items}}
-                <div class="flex flex-row justify-between w-full h-[9%] border-gray-600 border items-center px-8">
-                    <input id="itemName {{ $i }}" class="w-[10%] bg-slate-800"
+                <div class="flex flex-row justify-between w-full h-[9%] border border-[--colour-border]-gray-600 border border-[--colour-border] items-center px-8">
+                    <input id="itemName {{ $i }}" class="w-[10%] bg-[--colour-800]"
                            placeholder="{{$item.ItemName}}">
 
                     <div class="flex flex-row items-center justify-start gap-2 w-[10%] h-full">
-                        <select id="sectionId {{ $i }}" class="w-full bg-slate-800">
+                        <select id="sectionId {{ $i }}" class="w-full bg-[--colour-800]">
                             {{range $j, $section := $.Sections}}
                                 {{if eq $section.SectionId $item.SectionId}}
                                     <option value="{{$section.SectionId}}"
@@ -105,13 +105,13 @@
                     </div>
 
                     <div class="flex flex-row justify-around text-right w-[5%]">
-                        ₹<input id="price {{ $i }}" class="text-right w-full bg-slate-800"
+                        ₹<input id="price {{ $i }}" class="text-right w-full bg-[--colour-800]"
                                 placeholder="{{$item.Price}}">
 
                     </div>
                     <div class="w-[5%] h-[75%] text-center">
                         <button id="edit {{ $i }}" data-Itemid="{{$item.ItemId}}"
-                                class="w-full h-full border-gray-500 border-2 rounded-full">
+                                class="w-full h-full border border-[--colour-border]-gray-500 border border-[--colour-border]-2 rounded-full">
                             🖪
                         </button>
                     </div>
@@ -119,7 +119,7 @@
             {{end}}
         </div>
     </div>
-    <div class="flex flex-row w-full h-[10%] items-center justify-end px-8 bg-slate-800">
+    <div class="flex flex-row w-full h-[10%] items-center justify-end px-8 bg-[--colour-800]">
         <div id="Error" class="flex items-center justify-center bg-red-400 rounded-l w-[30%] h-[70%] hidden">
 
         </div>

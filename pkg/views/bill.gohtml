@@ -12,22 +12,22 @@
         Bill
     </title>
 </head>
-<body class="bg-slate-900 h-screen font-noto">
+<body class="bg-[--colour-900] h-screen font-noto">
 <div class="flex flex-col items-center gap-[10vh] overflow-y-auto">
-    <div class="flex flex-row bg-slate-800 w-full h-[10vh] text-white items-center justify-between gap-16 px-32">
+    <div class="flex flex-row bg-[--colour-800] w-full h-[10vh] text-[--colour-font] items-center justify-between gap-16 px-32">
         You are Logged in as: User
-        <div class="flex flex-row bg-slate-800 w-[50%] h-full text-teal-500 items-center justify-end gap-16">
-            <a href="/items" class="text-center border rounded-full w-[15%] h-[25%]">Items</a>
-            <a href="/orders" class="text-center border rounded-full w-[15%] h-[25%]">Orders</a>
-            <a id="logout" href="/login" class="text-center border rounded-full w-[15%] h-[25%]">Log Out</a>
+        <div class="flex flex-row bg-[--colour-800] w-[50%] h-full text-[--colour-hyper] items-center justify-end gap-16">
+            <a href="/items" class="text-center border border-[--colour-border] rounded-full w-[15%] h-[25%]">Items</a>
+            <a href="/orders" class="text-center border border-[--colour-border] rounded-full w-[15%] h-[25%]">Orders</a>
+            <a id="logout" href="/login" class="text-center border border-[--colour-border] rounded-full w-[15%] h-[25%]">Log Out</a>
         </div>
     </div>
-    <div class="flex flex-col items-center justify-center border-gray-500 border w-[50%] rounded-3xl text-white">
+    <div class="flex flex-col items-center justify-center border border-[--colour-border]-gray-500 border border-[--colour-border] w-[50%] rounded-3xl text-[--colour-font]">
         <div class="flex items-center justify-center rounded-t-3xl w-full h-[7vh] text-2xl font-bold">
             Order No: {{.Order.OrderId}}
         </div>
-        <div class="flex flex-col items-center bg-slate-800 w-full">
-            <div class="flex flex-row items-center justify-between w-full h-[7vh] border-gray-600 border px-2">
+        <div class="flex flex-col items-center bg-[--colour-800] w-full">
+            <div class="flex flex-row items-center justify-between w-full h-[7vh] border border-[--colour-border]-gray-600 border border-[--colour-border] px-2">
                 <div class="w-[20%]">
                     Item
                 </div>
@@ -42,7 +42,7 @@
                 </div>
             </div>
             {{range $i,$dish := .Order.Dishes}}
-                <div class="flex flex-row items-center justify-between w-full h-[7vh] border-gray-600 border px-2">
+                <div class="flex flex-row items-center justify-between w-full h-[7vh] border border-[--colour-border]-gray-600 border border-[--colour-border] px-2">
                     <div class="w-[20%]">
                         {{ $dish.ItemName }}
                     </div>
@@ -57,7 +57,7 @@
                     </div>
                 </div>
             {{end}}
-            <div class="flex flex-row items-center justify-between w-full h-[7vh] border-gray-600 border px-2">
+            <div class="flex flex-row items-center justify-between w-full h-[7vh] border border-[--colour-border]-gray-600 border border-[--colour-border] px-2">
                 <div class="w-[10%]">
                     Total
                 </div>

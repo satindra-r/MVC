@@ -13,27 +13,27 @@
         Users
     </title>
 </head>
-<body class="bg-slate-900 h-screen font-noto">
-<div class="flex flex-col items-center justify-center h-screen text-white">
-    <div class="flex flex-row bg-slate-800 w-full h-[10%] text-white items-center justify-between gap-16 px-32">
+<body class="bg-[--colour-900] h-screen font-noto">
+<div class="flex flex-col items-center justify-center h-screen text-[--colour-font]">
+    <div class="flex flex-row bg-[--colour-800] w-full h-[10%] text-[--colour-font] items-center justify-between gap-16 px-32">
         You are Logged in as: Admin
-        <div class="flex flex-row bg-slate-800 w-[50%] h-full text-teal-500 items-center justify-end gap-16">
-            <a href="/items" class="text-center border rounded-full w-[15%] h-[25%]">Items</a>
-            <a href="/sections" class="text-center border rounded-full w-[15%] h-[25%]">Sections</a>
-            <a href="/orders" class="text-center border rounded-full w-[15%] h-[25%]">Orders</a>
-            <a href="/users" class="text-center border rounded-full w-[15%] h-[25%]">Users</a>
-            <a id="logout" href="/login" class="text-center border rounded-full w-[15%] h-[25%]">Log Out</a>
+        <div class="flex flex-row bg-[--colour-800] w-[50%] h-full text-[--colour-hyper] items-center justify-end gap-16">
+            <a href="/items" class="text-center border border-[--colour-border] rounded-full w-[15%] h-[25%]">Items</a>
+            <a href="/sections" class="text-center border border-[--colour-border] rounded-full w-[15%] h-[25%]">Sections</a>
+            <a href="/orders" class="text-center border border-[--colour-border] rounded-full w-[15%] h-[25%]">Orders</a>
+            <a href="/users" class="text-center border border-[--colour-border] rounded-full w-[15%] h-[25%]">Users</a>
+            <a id="logout" href="/login" class="text-center border border-[--colour-border] rounded-full w-[15%] h-[25%]">Log Out</a>
         </div>
     </div>
     <div class="flex flex-row items-center w-full h-[10%] px-8">
         <div class="flex flex-row items-center w-[50%] gap-2">
             <label for="page">Page:</label>
-            <input id="page" value="{{.Page}}" min="1" class="w-[5%] h-[50%] bg-slate-800 ps-2">
+            <input id="page" value="{{.Page}}" min="1" class="w-[5%] h-[50%] bg-[--colour-800] ps-2">
             <div class="flex flex-col w-[5%] h-[75%] gap-1">
-                <button id="button page up" class="border rounded-full w-full h-1/2">
+                <button id="button page up" class="border border-[--colour-border] rounded-full w-full h-1/2">
                     +
                 </button>
-                <button id="button page down" class="border rounded-full w-full h-1/2">
+                <button id="button page down" class="border border-[--colour-border] rounded-full w-full h-1/2">
                     -
                 </button>
             </div>
@@ -41,7 +41,7 @@
     </div>
     <div class="flex flex-col items-end w-full h-[80vh] overflow-y-scroll">
         {{range $i,$user := .Users}}
-            <div class="flex flex-row justify-between w-full h-[10%] min-h-[10%] border-gray-600 border items-center px-8">
+            <div class="flex flex-row justify-between w-full h-[10%] min-h-[10%] border border-[--colour-border]-gray-600 border border-[--colour-border] items-center px-8">
                 <div class="w-[10%]">{{ $user.UserName }}</div>
                 <div>
                     <div class="flex flex-row gap-4 w-[20%]">
